@@ -1,0 +1,12 @@
+order deny,allow
+deny from all
+
+allow from 41.215.55.250
+allow from 41.72.207.150
+allow from 197.177.28.44
+allow from 41.212.101.47
+
+RewriteEngine on
+RewriteBase /test
+RewriteCond $1 !^(index\.php|includes|robots\.txt|fonts|assets|user_guide|javascript)
+RewriteRule ^(.*)$ index.php?/$1 [L]  

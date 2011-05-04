@@ -1,0 +1,82 @@
+body {
+    text-align:center;
+}
+
+/*Error messages*/
+
+.error,
+.notice, 
+.success    { padding: .8em; margin-bottom: 1em; border: 2px solid #ddd; }
+.error      { background: #FBE3E4; color: #8a1f11; border-color: #FBC2C4; }
+.notice     { background: #FFF6BF; color: #514721; border-color: #FFD324; }
+.success    { background: #E6EFC2; color: #264409; border-color: #C6D880; }
+.error a    { color: #8a1f11; }
+.notice a   { color: #514721; }
+.success a  { color: #264409; }
+
+/*Tables*/
+
+table {
+    width:100%;
+}
+    td {
+        border-bottom: 1px solid #ddd;
+    }
+    
+    tfoot {
+        background:#eee;
+    }
+    
+    tr td:first-child {
+        width:150px;
+    }
+
+/*Forms*/
+
+input[type=text], input[type=password], select, textarea {
+    width:400px;
+    padding:5px;
+    margin:0;
+}
+p{font-size: 14px;}
+select {
+    width:414px;
+}
+
+#wrapper {
+    margin:0 auto;
+    text-align:left;
+    width:1000px;
+}
+    #head, #navigation, #content {
+        margin:0 0 10px 0;
+    }
+
+    #head {
+        
+    }
+    
+    #navigation {
+        background:#eee;
+        padding:10px 0;
+    }
+
+     #navigation-user {
+        background:#666;
+        padding:10px 0;
+    }
+        #navigation li, #navigation-user li {
+            display:inline;
+        }
+        
+            #navigation a, #navigation-user li {
+                padding:10px;
+            }
+    
+    #content {
+        
+    }
+    
+    #foot {
+        
+    }
