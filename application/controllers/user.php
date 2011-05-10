@@ -6,264 +6,332 @@
  * Enough talk, the good stuff is below
  */
 
-class user extends CI_Controller{
-       /**
+class user extends CI_Controller {
+    /**
      * constructor
      */
-private $tpl;
+    private $tpl;
 
-public $data = array();
+    public $data = array();
 
-public $receivers = array();
+    public $receivers = array();
 
-    function __construct()
-	{
-		parent::__construct();
-                $this->load->model('redux_auth_model');
-                $this->load->model('relation_model');
-                $this->tpl = $this->redux_auth->template_choose();
-                
-	}
-	/**
-	 * index
-	 *
-	 * @return void
-	 * @author Mathew
-	 **/
-	function index()
-	{
-            if($this->redux_auth->logged_in())
-            {
-                redirect('user/profile');
-            }
-            else{
-		redirect('auth/login');
-            }
-	}
+    private $site_notifications = array();
 
+    function __construct() {
+        parent::__construct();
+        $this->load->model('redux_auth_model');
+        $this->load->model('relation_model');
 
-        function profile()
-        {
+        /*change here*/
+        $this->load->config('notifications');
+        $this->site_notifications = $this->config->item('site_notifications');
 
-           
-            if ($this->redux_auth->logged_in())
-	    {
-	         $data['profile'] = $this->redux_auth->profile();
+        $this->tpl = $this->redux_auth->template_choose();
 
-                 /**
-                  *  I have put all the connections, follows, and proposed follows
-                  * and proposed connections
-                  *
-                  * But we can separate them in different functions is there is a need for them
-                  *
-                  */
-                 $data['users_connections'] =$this->relation->users_connections();
-                 $data['users_follows'] = $this->relation->users_follows();
-                 $data['suggest_connect'] = $this->relation->suggest_connect();
-                 $data['suggest_follow'] = $this->relation->suggest_follow();
-                 $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
-
-                 $data['update_user'] = $this->update->all();
-                 $this->data['content'] = $this->load->view('user/profile', $data, true);
-	        $this->load->view($this->tpl,  $this->data);
-	    }
-	    else
-	    {
-	        redirect('auth/login');
-	    }
+    }
+    /**
+     * index
+     *
+     * @return void
+     * @author Mathew
+     **/
+    function index() {
+        if($this->redux_auth->logged_in()) {
+            redirect('user/profile');
         }
+        else {
+            redirect('auth/login');
+        }
+    }
 
-        function update_create($id=0)
-        {
 
-        if($id===0)
-            {
-                $this->update->create();
-                
-            }
-        else
-            {
-             $this->update->create($id);
+    function profile() {
+
+
+        if ($this->redux_auth->logged_in()) {
+            $data['profile'] = $this->redux_auth->profile();
+
+            /**
+             *  I have put all the connections, follows, and proposed follows
+             * and proposed connections
+             *
+             * But we can separate them in different functions is there is a need for them
+             *
+             */
+
+            $data['site_notifications'] = $this->site_notifications;
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['update_user'] = $this->update->all();
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
 
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
         }
-
-         /**
-         *  Comment on an update
-         *
-         */
-
-        function update_comment()
-        {
-            $this->update->comment();
+        else {
+            redirect('auth/login');
         }
+    }
 
-        /**
-         * Deleting an update
-         */
+    /*change here*/
+    function view_update($updateid = 0) {
+        if ($this->redux_auth->logged_in()) {
+            $data['profile'] = $this->redux_auth->profile();
 
-        function update_delete($content_id=0)
-        {
-            if($content_id===0)
-            {
-                $this->update->delete();
+            /**
+             *  I have put all the connections, follows, and proposed follows
+             * and proposed connections
+             *
+             * But we can separate them in different functions is there is a need for them
+             *
+             */
+            $data['site_notifications'] = $this->site_notifications;
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['update_user'] = $this->update->view($updateid,$this->session->userdata['userid']);
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
 
-            else
-            {
-                $this->update->delete($content_id);
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+    /*end of change*/
+
+    function create_update($id=0) {
+
+        if($id===0) {
+            $this->update->create();
+
+        }
+        else {
+            $this->update->create($id);
+        }
+
+    }
+
+    /**
+     *  Comment on an update
+     *
+     */
+
+    function comment() {
+        $this->update->comment();
+    }
+
+    /**
+     * Deleting an update
+     */
+
+    function delete($content_id=0) {
+        if($content_id===0) {
+            $this->update->delete();
+        }
+
+        else {
+            $this->update->delete($content_id);
+        }
+    }
+
+    /**
+     * View a selected user's profile
+     *@param <int> the selected users id
+     */
+
+    function view($userid) {
+
+        /*change here also*/
+        if ($this->redux_auth->logged_in()) {
+            $data['profile'] = $this->redux_auth->profile();
+
+            $data['site_notifications'] = $this->site_notifications;
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['update_user'] = $this->update->selected($userid);
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
+
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
         }
-
-        /**
-         * Retrieve a selected users update
-         *@param <int> the selected users id
-         */
-
-        function update_selected($userid)
-        {
-            return $this->update->selected($userid);
-
+        else {
+            redirect('auth/login');
         }
-        /**
-         * Retrieves all the messages from a user and a form to create mesages
-         */
+        /*change ends here*/
 
-        function messaging_all()
-        {
+    }
+    /**
+     * Retrieves all the messages from a user and a form to create mesages
+     */
 
-          
-             if ($this->redux_auth->logged_in())
-	    {
-	         $data['profile'] = $this->redux_auth->profile();
-                 $data['users_connections'] =$this->relation->users_connections();
-                 $data['users_follows'] = $this->relation->users_follows();
-                 $data['suggest_connect'] = $this->relation->suggest_connect();
-                 $data['suggest_follow'] = $this->relation->suggest_follow();
+    function messages() {
 
-                 $data['message_user'] = $this->messaging->all();
-                 $this->data['content'] = $this->load->view('user/profile', $data, true);
-	        $this->load->view($this->tpl,  $this->data);
+
+        if ($this->redux_auth->logged_in()) {
+            $data['site_notifications'] = $this->site_notifications;
+            $data['profile'] = $this->redux_auth->profile();
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['message_user'] = $this->messaging->all();
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
-              else
-	    {
-	        redirect('auth/login');
-	    }
-         
+
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+        }
+        else {
+            redirect('auth/login');
         }
 
-        /**
-         * Method to view a particular message and its replies
-         *
-         * @param <int> message id tp pass to the library function
-         */
+    }
 
-        function message_view($msgid = 0)
-        {
-             
-             if ($this->redux_auth->logged_in())
-	    {
-	         $data['profile'] = $this->redux_auth->profile();
-                 $data['users_connections'] =$this->relation->users_connections();
-                 $data['users_follows'] = $this->relation->users_follows();
-                 $data['suggest_connect'] = $this->relation->suggest_connect();
-                 $data['suggest_follow'] = $this->relation->suggest_follow();
+    /**
+     * Method to view a particular message and its replies
+     *
+     * @param <int> message id tp pass to the library function
+     */
 
-                 $data['message_view'] = $this->messaging->view($msgid);
-                 $this->data['content'] = $this->load->view('user/profile', $data, true);
-	        $this->load->view($this->tpl,  $this->data);
+    function view_message($msgid = 0) {
+
+        if ($this->redux_auth->logged_in()) {
+            $data['profile'] = $this->redux_auth->profile();
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $data['site_notifications'] = $this->site_notifications;
+            $data['message_view'] = $this->messaging->view($msgid);
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
-              else
-	    {
-	        redirect('auth/login');
-	    }
 
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+        }
+        else {
+            redirect('auth/login');
         }
 
-        /**
-         * Function to place the compose form at any place of the site, just the compose
-         * form
-         *
-         */
-        function message_compose()
-        {
-             
-             if ($this->redux_auth->logged_in())
-	    {
-	         $data['profile'] = $this->redux_auth->profile();
-                 $data['users_connections'] =$this->relation->users_connections();
-                 $data['users_follows'] = $this->relation->users_follows();
-                 $data['suggest_connect'] = $this->relation->suggest_connect();
-                 $data['suggest_follow'] = $this->relation->suggest_follow();
-                 
-                 $data['message_compose'] = $this->messaging->compose();
-                 $this->data['content'] = $this->load->view('user/profile', $data, true);
-	        $this->load->view($this->tpl,  $this->data);
+    }
+
+    /**
+     * Function to place the compose form at any place of the site, just the compose
+     * form
+     *
+     */
+    function compose_message() {
+
+        if ($this->redux_auth->logged_in()) {
+            $data['profile'] = $this->redux_auth->profile();
+            $data['users_connections'] =$this->relation->users_connections();
+            $data['users_follows'] = $this->relation->users_follows();
+            $data['suggest_connect'] = $this->relation->suggest_connect();
+            $data['suggest_follow'] = $this->relation->suggest_follow();
+            $data['site_notifications'] = $this->site_notifications;
+            $data['message_compose'] = $this->messaging->compose();
+            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+            $this->load->model('notification_model');
+            $notifications = $this->notification_model->all();
+            if($notifications) {
+                $data['user_notifications'] = $notifications;
             }
-              else
-	    {
-	        redirect('auth/login');
-	    }
+
+            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
         }
-
-        /**
-         * Function to delete user messages
-         *
-         */
-
-        function messaage_delete($msgid = 0)
-        {
-            if($msgid===0)
-            {
-                $this->messaging->delete();
-
-            }
-            else
-            {
-                $this->messaging->delete($msgid);
-            }
+        else {
+            redirect('auth/login');
         }
+    }
 
-        function message_create()
-        {
-            $this->messaging->create();
+    /**
+     * Function to delete user messages
+     *
+     */
+
+    function delete_message($msgid = 0) {
+        if($msgid===0) {
+            $this->messaging->delete();
+
         }
-
-        /**
-         * When composing message this function lists the users friends, FACEBOOK STYLE!!!!
-         *
-         */
-        function message_friend()
-        {
-            $this->messaging->friends();
+        else {
+            $this->messaging->delete($msgid);
         }
+    }
 
-        function message_reply($msgid)
+    function create_message() {
+        $this->messaging->create();
+    }
 
-        {
-            $this->messaging->reply($msgid);
-        }
+    /**
+     * When composing message this function lists the users friends, FACEBOOK STYLE!!!!
+     *
+     */
+    function message_friend() {
+        $this->messaging->friends();
+    }
+
+    function reply($msgid) {
+        $this->messaging->reply($msgid);
+    }
 
 
-        function follow_user($id)
-        {
-            $return =  $this->relation->follow($id);
+    function follow_user($id) {
+        $return =  $this->relation->follow($id);
             $this->profile();
-        }
+    }
 
     /*
-     * This function was put here due to very bad programming paradigms so kids 
+     * This function was put here due to very bad programming paradigms so kids
      * DONT TRY THIS
      * The reason the message validate receivers was put here instead of the library
      * is because the callback function cannot be placed outside of its usage controller
-     * 
+     *
      * so just imagine it being there, IMAGINE!!!
      * alright the rest works so be happy
-     * 
-     */
+     *
+    */
 
-        public function validate_receivers($receivers)
-    {
+    public function validate_receivers($receivers) {
         $the_receivers = explode(',',$receivers);
         foreach($the_receivers as $receiver) {
             $receiver = trim($receiver);

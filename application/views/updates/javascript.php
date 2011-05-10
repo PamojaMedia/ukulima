@@ -2,7 +2,7 @@
 var j = jQuery.noConflict();
 j(document).ready(function(){
 
-    j('.button').click(function() {
+    j('.button').live('click',function() {
 
         var id = this.id;
         j('#'+id).attr('disabled','disabled');
@@ -17,7 +17,7 @@ j(document).ready(function(){
 
         else {
             var index = id.substring(id.lastIndexOf('n') + 1 , id.length);
-            var the_url = "<?php echo site_url('user/update_comment/'); ?>";
+            var the_url = "<?php echo site_url('user/comment/'); ?>";
             var form_data = {
                     comment: j('#comment'+index).val(),
                     number: index,
@@ -38,15 +38,30 @@ j(document).ready(function(){
                             // class for the title to indicate whether it's an error or not'
                             title_class: (response['success'])?'success':'fail',
                             // (string | mandatory) the text inside the notification
-                            text: response['msg']
+                            text: response['result']['msg']
                         });
                         if(response['success']) {
                             if(id=='submit') {
-                                j('#rec_updates').prepend('<div class="update">'+j('#update').val()+'</div>');
+                                j('#rec_updates').prepend(
+                                        '<div class="update" id="update'+response['result']['id']+'">'+
+                                        response['result']['user']+
+                                        j('#update').val()+response['result']['del_url']+
+                                        '<div id="comment_div'+response['result']['id']+'"></div>'+
+                                        '<form method="post" action="'+the_url+'">'+
+                                        '<p><textarea id="comment'+response['result']['id']+'" name="comment" cols="50" rows="50"></textarea></p>'+
+                                        '<input type="hidden" name="number" value="'+response['result']['id']+'" />'+
+                                        '<p><input type="submit" class="button" name="button'+response['result']['id']+'" value="Comment" id="button'+response['result']['id']+'" /></p>'+
+                                        '</form>'+
+                                        '</div>'
+                                );
                                 j('#update').val("");
                             }
                             else {
-                                j('#comment_div'+index).append('<div class="comment">'+j('#comment'+index).val()+'</div>');
+                                j('#comment_div'+index).append('<div class="comment"> ------'
+                                    +response['result']['user']
+                                    +j('#comment'+index).val()
+                                    +response['result']['del_url']
+                                    +'</div>');
                                 j('#comment'+index).val("");
                             }
                         }
@@ -74,7 +89,7 @@ j(document).ready(function(){
 	time: 6000 // hang on the screen for...
     });
 
-    j('.delete').click(function() {
+    j('.delete').live('click',function() {
 
         var id = this.id;
 
@@ -92,7 +107,7 @@ j(document).ready(function(){
 
         var content_type = (isupdate)?'Update':'Comment';
         if(confirm('Are you sure you want to delete this '+content_type)) {
-            var the_url = "<?php echo site_url('user/update_delete/'); ?>";
+            var the_url = "<?php echo site_url('user/delete/'); ?>";
             var form_data = {
                     number: index,
                     ajax: '1'
@@ -110,7 +125,7 @@ j(document).ready(function(){
                             // class for the title to indicate whether it's an error or not'
                             title_class: (response['success'])?'success':'fail',
                             // (string | mandatory) the text inside the notification
-                            text: response['msg']
+                            text: response['result']['msg']
                         });
                         if(response['success']) {
                             if(isupdate) {

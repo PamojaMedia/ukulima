@@ -35,7 +35,7 @@
 
             <ul id="navigation-user">
                 <li><?php echo anchor('user/profile', 'User Home'); ?></li>
-                 <li><?php echo anchor('user/messaging_all', 'Messages'); ?></li>
+                 <li><?php echo anchor('user/messages', 'Messages'); ?></li>
                  
             </ul>
             <div id="content">

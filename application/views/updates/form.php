@@ -6,13 +6,13 @@
 
 <?php if(isset($userid)) {
 
-        echo form_open('user/update_create/'.$userid,array('id' => 'form_submit'));
+        echo form_open('user/create_update/'.$userid,array('id' => 'form_submit'));
 
     }
 
     else {
 
-        echo form_open('user/update_create',array('id' => 'form_submit'));
+        echo form_open('user/create_update/',array('id' => 'form_submit'));
 
     }
 ?>

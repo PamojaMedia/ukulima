@@ -28,52 +28,52 @@
  *      This method changes the flow of the controller. It is first called to ensure the user is logged in and if so, it redirects to the callled method
  */
 
-class messaging
-{
+class messaging {
 
     /**
-	 * CodeIgniter global
-	 *
-	 * @var string
-	 **/
-	protected $ci;
+     * CodeIgniter global
+     *
+     * @var string
+     **/
+    protected $ci;
 
+    public $data = array();
 
+    public  $receivers = array();
 
+    private $site_notifications = array();
+    /**
+     * __construct
+     *
+     * @return void
+     * @author Mathew
+     **/
+    public function __construct() {
 
-        public $data = array();
+        $this->ci =& get_instance();
 
-
-        public  $receivers = array();
-	/**
-	 * __construct
-	 *
-	 * @return void
-	 * @author Mathew
-	 **/
-	public function __construct()
-	{
-	$this->ci =& get_instance();
-
-
-                 // Load the updating model for the required db activity for updating and commenting
+        // Load the updating model for the required db activity for updating and commenting
         $this->ci->load->model('messaging_model');
+
+        /*change here also! variable to hold the user notifications config */
+        $this->ci->load->config('notifications');
+        $this->site_notifications = $this->ci->config->item('site_notifications');
 
         // Load the relation model for checking connection and follow status.
         $this->ci->load->model('relation_model');
         $this->data = $this->ci->redux_auth->get_browser('messages');
 
 
-	}
-        
+    }
+
     /**
      * Method for displaying all the relevant messages when a user views thier profile page
      */
-    public function all()
-    {
+    public function all() {
         // get all the messages of the logged in user from the model
-        $result['messages'] = $this->ci->messaging_model->all($this->ci->session->userdata['userid']);
-        
+
+        $result['messages'] = $this->ci->messaging_model->get();
+
         // set the error message in case the user has no messages
         $result['error_message'] = 'You have not sent or received any updates yet';
 
@@ -99,8 +99,12 @@ class messaging
      * Method for displaying a particular message and it's replies
      * @param <int> $msgid variable to indicate which update to display
      */
-    public function view($msgid = 0)
-    {
+    public function view($msgid = 0) {
+
+        // load the notification model and set any notice about the update as viewed.
+        $this->ci->load->model('notification_model','notifications');
+        $this->ci->notifications->noted($msgid,$this->site_notifications['message']);
+
         // Load the update and it's comments from the model
         $result['messages'] = $this->ci->messaging_model->view($msgid, $this->ci->session->userdata['userid']);
 
@@ -121,31 +125,29 @@ class messaging
         $this->data['content'] = $messages.$form;
 
         // load the page template with the content data.
-       // $this->load->view('template',$this->data);
+        // $this->load->view('template',$this->data);
 
         return $this->data;
     }
 
-     /**
+    /**
      *
      */
-    public function compose()
-    {
+    public function compose() {
         $form = $this->ci->load->view('messages/form','',true);
 
         // put the form and messages as the page contents
         $this->data['content'] = $form;
 
         // load the page template with the content data.
-       // $this->load->view('template',$this->data);
+        // $this->load->view('template',$this->data);
         return $this->data;
     }
 
-       /**
+    /**
      * Method to create a new update.
      */
-    public function create()
-    {
+    public function create() {
         $send = false; // variable to indicate whether the message was sent successfully
         $message = ''; // the message to indicate success or failure
 
@@ -155,19 +157,23 @@ class messaging
         }
         else {
             // pass the data to the model function to create the update
-            $send = $this->ci->messaging_model->create(
+            $msg_id = $this->ci->messaging_model->create(
                     $this->receivers,
                     $this->ci->input->post('subject'),
                     $this->ci->input->post('message'),
                     0); // the message id
             // successfully created
-            if($send) {
+            if($msg_id) {
                 // set the success message
+                $send = true;
                 $message = 'Your Message has been sent successfully.';
+
+                $this->ci->load->model('notification_model','notifications');
+                $this->ci->notifications->set_notification($this->user_notifications['message'],$msg_id,$this->receivers);
             }
             else {
 
-             $comma = implode(",", $this->receivers);
+                $comma = implode(",", $this->receivers);
                 // else set the failure message
                 $message = $comma.'Failure: The Message was not sent.';
             }
@@ -184,8 +190,7 @@ class messaging
      * @param <int> $content_id the update/comment to delete
      */
 
-    public function delete($msgid = 0)
-    {
+    public function delete($msgid = 0) {
         $delete = false; // variable to indicate whether the creation was successful
         $message = ''; // the message to indicate success or failure
 
@@ -227,12 +232,11 @@ class messaging
     function friends() {
         $friends = $this->ci->messaging_model->friends($this->ci->input->post('q'));
 
-        foreach($friends as $friend)
-        {
+        foreach($friends as $friend) {
             $arr[] = array (
-                'id' => $friend['userid'],
-                'name' => $friend['firstname'].' '.$friend['lastname']
-                );
+                    'id' => $friend['userid'],
+                    'name' => $friend['firstname'].' '.$friend['lastname']
+            );
         }
 
         echo json_encode($arr);
@@ -243,8 +247,7 @@ class messaging
      * Method to create a new comment
      */
 
-    public function reply($msgid = 0)
-    {
+    public function reply($msgid = 0) {
         $reply = false; // variable to indicate whether the creation was successful
         $message = ''; // the message to indicate success or failure
 
@@ -264,15 +267,19 @@ class messaging
                     $receivers = $this->ci->messaging_model->reply_receivers(intval($msgid));
 
                     // pass the data to the model function to create the reply
-                    $reply = $this->ci->messaging_model->create(
+                    $reply_id = $this->ci->messaging_model->create(
                             $receivers,
                             '', // the subject is blank when replying
                             $this->ci->input->post('message'),
                             intval($msgid)); // the message id
 
                     // depending on success of replying, set the message to be displayed
-                    if($reply) {
+                    if($reply_id) {
+                        $reply = true;
                         $message = 'Your reply has been sent successfully.';
+
+                        $this->ci->load->model('notification_model','notifications');
+                        $this->ci->notifications->set_notification($this->user_notifications['message'],$reply_id,$receivers);
                     }
                     else {
                         $message = 'Failure: The reply was not sent.';
@@ -304,8 +311,8 @@ class messaging
         if($ajax) { // if post was through ajax
             // create the response array indicating success and the message to display
             $response = array(
-                'success' => $success,
-                'msg' => $message
+                    'success' => $success,
+                    'msg' => $message
             );
             // encode the array and send it back
             echo json_encode($response);
@@ -326,11 +333,5 @@ class messaging
             redirect('user/profile');
         }
     }
-
-
-
-
-
-
 
 }

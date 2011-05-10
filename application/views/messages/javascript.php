@@ -107,7 +107,7 @@ k(document).ready(function(){
     k('.delete').click(function() {
 
         if(confirm('Are you sure you want to delete this message?')) {
-            var the_url = "<?php echo site_url('user/message_delete/'); ?>";
+            var the_url = "<?php echo site_url('user/delete_message/'); ?>";
 
             var id = this.id;
             var form_data = {

@@ -9,6 +9,57 @@ echo $profile['email'].'<br/>';
 
 
 ?> </pre>
+    <h2>Notifications</h2>
+    <pre class="notice">
+<?php
+    if(isset($user_notifications))
+    {
+        $current_note = $user_notifications[0]['type'];
+        $current_id = $user_notifications[0]['ID'];
+        $notification = '';
+        foreach($user_notifications as $note)
+        {
+            if($current_note != $note['type']) {
+                ?>
+<?php echo substr($notification,0,-2).$note_details; ?>
+<?php
+                $note_details = '';
+                $notification = '';
+
+                echo '<br><br>';
+            }
+
+            if($current_id == $note['ID']) {
+                $notification .= anchor('user/view/'.$note['userid'],$note['firstname'].' '.$note['lastname']).', ';
+                $note_details = ' - '.$site_notifications[$note['type']].' - '.
+                        anchor('user/view_'.($site_notifications[$note['type']]=='comment'?'update':$site_notifications[$note['type']]).
+                        '/'.$note['ID'],'view');
+            }
+            else {
+
+        ?>
+<?php echo substr($notification,0,-2).$note_details.'<br>'; ?>
+<?php
+
+                $notification = anchor('user/view/'.$note['userid'],$note['firstname'].' '.$note['lastname']).', ';
+                $note_details = ' - '.$site_notifications[$note['type']].' - '.
+                        anchor('user/view_'.($site_notifications[$note['type']]=='comment'?'update':$site_notifications[$note['type']]).
+                        '/'.$note['ID'],'view');
+
+            }
+
+            $current_note = $note['type'];
+            $current_id = $note['ID'];
+        }
+
+        ?>
+<?php echo substr($notification,0,-2).$note_details; ?>
+
+    <?php
+
+    }
+    ?>
+    </pre>
 
      <h2>People you are connected</h2>
      <pre class="notice">
@@ -131,7 +182,12 @@ foreach($users_connections as $user)
 
 <?php if(isset($message_view)): ?>
 <div style="width:500px; float:left; height:auto; overflow:hidden;">
-<?php echo $message_view; ?>
+<?php //echo $message_user
+    foreach($message_view as $message)
+{
+    echo $message.'<br />';
+}
+; ?>
 </div>
 <?php endif; ?>
 

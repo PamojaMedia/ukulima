@@ -4,7 +4,7 @@
 
 <?php if(isset($msgid)) {
 
-        echo form_open('user/message_reply/'.$msgid,array('id' => 'form_submit'));
+        echo form_open('user/reply/'.$msgid,array('id' => 'form_submit'));
 
     }
 
@@ -16,7 +16,7 @@
 
 <?php
 
-        echo form_open('user/message_create',array('id' => 'form_submit'));
+        echo form_open('user/create_message',array('id' => 'form_submit'));
 
         // Create the text area for typing in the receipients
 

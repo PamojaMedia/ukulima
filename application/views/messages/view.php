@@ -1,36 +1,36 @@
-<h1>Recent Updates</h1>
+<h1>Recent Messages</h1>
 
 <div id="view_messages">
-    
-<?php
 
-if(is_array($messages)) {
+    <?php
 
-foreach($messages as $message) {
+    if(is_array($messages)) {
 
-    echo '<div id="message_text'.$message['msgid'].'">';
+        foreach($messages as $message) {
 
-    echo $message['content'];
+            echo '<div id="message_text'.$message['msgid'].'">';
 
-    echo '<br> --------------------------------- ';
+            echo $message['content'];
 
-    if($message['parentid']) {
-       echo anchor('messaging/delete/'.$message['msgid'], 'Delete', array('class' => 'delete', 'id' => $message['msgid']));
+            echo '<br> --------------------------------- ';
+
+            if($message['parentid']) {
+                echo anchor('messaging/delete/'.$message['msgid'], 'Delete', array('class' => 'delete', 'id' => $message['msgid']));
+            }
+
+            echo '<br></div>';
+
+        }
+
+
     }
 
-    echo '<br></div>';
+    else {
 
-}
+        echo $error_message;
 
+    }
 
-}
-
-else {
-
-    echo $error_message;
-
-}
-
-?>
+    ?>
 
 </div>

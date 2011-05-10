@@ -48,11 +48,11 @@ foreach($updates as $update) {
 
             '<div id="comment_box'.$update['ID'].'">'.
 
-            form_open('user/update_comment/').
+            form_open('user/comment/').
 
             '<p>'.form_textarea( $textarea ).'</p>'.
 
-            '<p>'.form_hidden("number", $update['ID'], false).'</p>'.
+            form_hidden("number", $update['ID'], false).
 
             '<p>'.form_submit($button).'</p>'.
 
@@ -60,7 +60,10 @@ foreach($updates as $update) {
 
             '</div>';
 
-        echo $update['update'] . anchor('user/update_delete/'.$update['ID'], 'Delete', array('class' => 'delete', 'id' => 'deleteup'.$update['ID']));
+        $names = anchor('user/view/'.$update['userid'],'<b>'.$update['firstname'].' '.$update['lastname'].'</b> ').
+                (isset($update['rec_first'])?'to <b>'.$update['rec_first'].' '.$update['rec_last'].'</b> ':'');
+
+        echo $names.$update['update'] . anchor('user/delete/'.$update['ID'], 'Delete', array('class' => 'delete', 'id' => 'deleteup'.$update['ID']));
 
         echo '<div id="comment_div'.$update['ID'].'">';
 
@@ -70,7 +73,7 @@ foreach($updates as $update) {
 
         echo '<div class="comment" id="comment'.$update['ID'].'"> ------';
 
-        echo $update['update'] . anchor('user/update_delete/'.$update['ID'], 'Delete', array('class' => 'delete', 'id' => 'deletecm'.$update['ID']));
+         echo anchor('user/view/'.$update['userid'],'<b>'.$update['firstname'].' '.$update['lastname'].'</b> ').$update['update'] . anchor('user/update_delete/'.$update['ID'], 'Delete', array('class' => 'delete', 'id' => 'deletecm'.$update['ID']));
 
         echo '</div>';
 
