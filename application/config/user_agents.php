@@ -132,6 +132,7 @@ $mobiles = array(
 					'palm'					=> "Palm",
 					'series60'				=> "Symbian S60",
 					'windows ce'			=> "Windows CE",
+                                        'android'                       => "Android",
 
 					// Browsers
 					'obigo'					=> "Obigo",

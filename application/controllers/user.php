@@ -18,6 +18,12 @@ class user extends CI_Controller {
 
     private $site_notifications = array();
 
+    // indicate whether the browser is a mobile browser or not
+    private $is_mobile = false;
+
+    // set the prefix for the views. used when the browser is mobile. the views have an m- prefix. for browsers, there is no prefix
+    private $view_prefix = '';
+
     function __construct() {
         parent::__construct();
         $this->load->model('redux_auth_model');
@@ -29,6 +35,11 @@ class user extends CI_Controller {
 
         $this->tpl = $this->redux_auth->template_choose();
 
+        if($this->agent->is_mobile()) {
+            $this->is_mobile = true;
+            $this->view_prefix = 'm-';
+        }
+
     }
     /**
      * index
@@ -38,7 +49,7 @@ class user extends CI_Controller {
      **/
     function index() {
         if($this->redux_auth->logged_in()) {
-            redirect('user/profile');
+            $this->home();
         }
         else {
             redirect('auth/login');
@@ -46,76 +57,93 @@ class user extends CI_Controller {
     }
 
 
-    function profile() {
-
+    function home($page = 0) {
 
         if ($this->redux_auth->logged_in()) {
-            $data['profile'] = $this->redux_auth->profile();
 
-            /**
-             *  I have put all the connections, follows, and proposed follows
-             * and proposed connections
-             *
-             * But we can separate them in different functions is there is a need for them
-             *
-             */
-
-            $data['site_notifications'] = $this->site_notifications;
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['update_user'] = $this->update->all();
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
-
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
+            $update = $this->input->post('update');
+            if(!empty($update)) {
+                $this->create_update();
             }
 
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $data['update_user'] = $this->update->all($page);
+            $data += $this->common_functions();
+
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
+
             $this->load->view($this->tpl,  $this->data);
+
         }
         else {
             redirect('auth/login');
         }
     }
 
-    /*change here*/
+    function profile($userid = 0) {
+
+        if ($this->redux_auth->logged_in()) {
+            if($userid == 0) {
+                $userid = $this->session->userdata['userid'];
+            }
+
+            $data['network'] = $this->profile->network($userid);
+            $data += $this->common_functions($userid);
+
+            $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+        else {
+            redirect('auth/login');
+        }
+
+    }
+
     function view_update($updateid = 0) {
         if ($this->redux_auth->logged_in()) {
-            $data['profile'] = $this->redux_auth->profile();
 
-            /**
-             *  I have put all the connections, follows, and proposed follows
-             * and proposed connections
-             *
-             * But we can separate them in different functions is there is a need for them
-             *
-             */
-            $data['site_notifications'] = $this->site_notifications;
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['update_user'] = $this->update->view($updateid,$this->session->userdata['userid']);
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
-
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
+            $num = $this->input->post('number');
+            if(!empty($num)) {
+                $this->comment();
             }
 
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $data['update_user'] = $this->update->view($updateid,$this->session->userdata['userid']);
+            $data += $this->common_functions();
+
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
             $this->load->view($this->tpl,  $this->data);
         }
         else {
             redirect('auth/login');
         }
     }
-    /*end of change*/
+
+    /**
+     * View a selected user's profile
+     *@param <int> the selected user's id
+     */
+
+    function view($userid = 0, $page = 0) {
+
+        if ($this->redux_auth->logged_in()) {
+
+            $update = $this->input->post('update');
+            if(!empty($update)) {
+                $this->create_update($userid);
+            }
+
+            $data['update_user'] = $this->update->selected($userid, $page);
+            $data += $this->common_functions($userid);
+
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+        }
+        else {
+            redirect('auth/login');
+        }
+
+    }
 
     function create_update($id=0) {
 
@@ -150,66 +178,47 @@ class user extends CI_Controller {
         else {
             $this->update->delete($content_id);
         }
-    }
 
-    /**
-     * View a selected user's profile
-     *@param <int> the selected users id
-     */
-
-    function view($userid) {
-
-        /*change here also*/
-        if ($this->redux_auth->logged_in()) {
-            $data['profile'] = $this->redux_auth->profile();
-
-            $data['site_notifications'] = $this->site_notifications;
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['update_user'] = $this->update->selected($userid);
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
-
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
+        if($this->is_mobile) {
+            $refer = $this->agent->referrer();
+            if(isset($this->session->userdata['referrer']) && preg_match('/delete/',$refer)) {
+                $refer = $this->session->userdata['referrer'];
             }
-
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
-            $this->load->view($this->tpl,  $this->data);
+            $this->session->set_userdata('referrer',$refer);
+            if(preg_match('/view_update/',$refer)) {
+                $updateid = substr($refer, strripos($refer, '/') + 1 , -5);
+                $this->view_update($updateid);
+            }
+            elseif(preg_match('/home/',$refer)) {
+                $this->home();
+            }
+            elseif(preg_match('/view/',$refer)) {
+                // extract the userid from the referral url
+                $userid = substr($refer, strripos($refer, '/') + 1 , -5);
+                $this->view($userid);
+            }
         }
-        else {
-            redirect('auth/login');
-        }
-        /*change ends here*/
 
     }
+
+
     /**
      * Retrieves all the messages from a user and a form to create mesages
      */
 
-    function messages() {
-
+    function messages($page = 0) {
 
         if ($this->redux_auth->logged_in()) {
-            $data['site_notifications'] = $this->site_notifications;
-            $data['profile'] = $this->redux_auth->profile();
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['message_user'] = $this->messaging->all();
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
 
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
+            $msg = $this->input->post('message');
+            if(!empty($msg)) {
+                $this->create_message();
             }
 
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $data['message_user'] = $this->messaging->all($page);
+            $data += $this->common_functions();
+
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
             $this->load->view($this->tpl,  $this->data);
         }
         else {
@@ -227,24 +236,18 @@ class user extends CI_Controller {
     function view_message($msgid = 0) {
 
         if ($this->redux_auth->logged_in()) {
-            $data['profile'] = $this->redux_auth->profile();
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
 
-            $data['site_notifications'] = $this->site_notifications;
-            $data['message_view'] = $this->messaging->view($msgid);
-
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
+            $msg = $this->input->post('message');
+            if(!empty($msg)) {
+                $this->reply($msgid);
             }
 
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $data['message_view'] = $this->messaging->view($msgid);
+            $data += $this->common_functions();
+
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
             $this->load->view($this->tpl,  $this->data);
+
         }
         else {
             redirect('auth/login');
@@ -260,22 +263,11 @@ class user extends CI_Controller {
     function compose_message() {
 
         if ($this->redux_auth->logged_in()) {
-            $data['profile'] = $this->redux_auth->profile();
-            $data['users_connections'] =$this->relation->users_connections();
-            $data['users_follows'] = $this->relation->users_follows();
-            $data['suggest_connect'] = $this->relation->suggest_connect();
-            $data['suggest_follow'] = $this->relation->suggest_follow();
-            $data['site_notifications'] = $this->site_notifications;
+
             $data['message_compose'] = $this->messaging->compose();
-            $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+            $data += $this->common_functions();
 
-            $this->load->model('notification_model');
-            $notifications = $this->notification_model->all();
-            if($notifications) {
-                $data['user_notifications'] = $notifications;
-            }
-
-            $this->data['content'] = $this->load->view('user/profile', $data, true);
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
             $this->load->view($this->tpl,  $this->data);
         }
         else {
@@ -291,10 +283,26 @@ class user extends CI_Controller {
     function delete_message($msgid = 0) {
         if($msgid===0) {
             $this->messaging->delete();
-
         }
         else {
             $this->messaging->delete($msgid);
+        }
+        if($this->is_mobile) {
+            $refer = $this->agent->referrer();
+            if(isset($this->session->userdata['referrer']) && preg_match('/delete_message/',$refer)) {
+                $refer = $this->session->userdata['referrer'];
+            }
+            $this->session->set_userdata('referrer',$refer);
+            if(preg_match('/messages/',$refer)) {
+                $this->messages();
+                echo 'Messages';
+            }
+            elseif(preg_match('/view_message/',$refer)) {
+                // extract the userid from the referral url
+                $parentid = substr($refer, strripos($refer, '/') + 1 , -5);
+                $this->view_message($parentid);
+                echo 'Viewing';
+            }
         }
     }
 
@@ -306,8 +314,25 @@ class user extends CI_Controller {
      * When composing message this function lists the users friends, FACEBOOK STYLE!!!!
      *
      */
-    function message_friend() {
-        $this->messaging->friends();
+    function message_receiver($ajax = 0) {
+        $receivers = $this->input->post('receivers');
+        if($receivers) {
+            $this->data['content'] = $this->messaging->add_receivers();
+        }
+        else {
+            $this->data['content'] = $this->messaging->friends($ajax);
+        }
+        if(!$ajax) {
+            $this->load->view($this->tpl,  $this->data);
+        }
+
+    }
+
+    function remove_receiver($recid) {
+        if($recid) {
+            $this->messaging->remove_receiver($recid);
+        }
+        $this->message_receiver(0);
     }
 
     function reply($msgid) {
@@ -315,10 +340,223 @@ class user extends CI_Controller {
     }
 
 
-    function follow_user($id) {
-        $return =  $this->relation->follow($id);
-            $this->profile();
+    function track_user($id) {
+        $return =  $this->relation->track($id);
+        if($this->is_mobile) {
+            $refer = $this->agent->referrer();
+            if(preg_match('/network_suggestions/',$refer)) {
+                $this->network_suggestions();
+            }
+            elseif(preg_match('/home/',$refer)) {
+                $this->home();
+            }
+            elseif(preg_match('/messages/',$refer)) {
+                $this->messages();
+            }
+            elseif(preg_match('/connect_user/',$refer)) {
+                $this->network_suggestions();
+            }
+            elseif(preg_match('/track_user/',$refer)) {
+                $this->network_suggestions();
+            }
+        }
+        else {
+            $this->home();
+        }
+
     }
+
+    function connect_user($id){
+        $return = $this->relation->connect($id);
+        if($this->is_mobile) {
+            $refer = $this->agent->referrer();
+            if(preg_match('/network_suggestions/',$refer)) {
+                $this->network_suggestions();
+            }
+            elseif(preg_match('/home/',$refer)) {
+                $this->home();
+            }
+            elseif(preg_match('/messages/',$refer)) {
+                $this->messages();
+            }
+            elseif(preg_match('/connect_user/',$refer)) {
+                $this->network_suggestions();
+            }
+            elseif(preg_match('/track_user/',$refer)) {
+                $this->network_suggestions();
+            }
+        }
+        else {
+            $this->home();
+        }
+    }
+
+    /**
+     * This section is for functions that call the profile library
+     */
+
+
+    function track($userid = 0, $page = 0) {
+        if ($this->redux_auth->logged_in()) {
+            if($userid == 0) {
+                $userid = $this->session->userdata['userid'];
+            }
+
+            $data['tracks'] = $this->profile->tracks($userid, $page);
+            $data += $this->common_functions($userid);
+
+            $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+
+    function trackback($userid = 0, $page = 0) {
+        if ($this->redux_auth->logged_in()) {
+            if($userid == 0) {
+                $userid = $this->session->userdata['userid'];
+            }
+
+            $data['trackback'] = $this->profile->trackback($userid, $page);
+            $data += $this->common_functions($userid);
+
+            $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+
+    function connections($userid = 0, $page = 0) {
+        if ($this->redux_auth->logged_in()) {
+            if($userid == 0) {
+                $userid = $this->session->userdata['userid'];
+            }
+
+            $data['connections'] = $this->profile->connections($userid, $page);
+            $data += $this->common_functions($userid);
+
+            $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+
+    function network_search($network = '',$userid = 0, $page = 0) {
+        if ($this->redux_auth->logged_in()) {
+            if($network == 'tracks' || $network == 'trackback' || $network == 'connections') {
+                if($userid == 0) {
+                    $userid = $this->session->userdata['userid'];
+                }
+
+                $data[$network] = $this->profile->network_search($network, $userid, $page);
+                $data += $this->common_functions($userid);
+
+                $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+                $this->load->view($this->tpl,  $this->data);
+            }
+            else {
+                $this->data['content'] = 'The search could not be performed!';
+                $this->load->view($this->tpl,  $this->data);
+            }
+
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+
+    function network_suggestions($page = 0) {
+        if ($this->redux_auth->logged_in()) {
+
+            $data['suggestions'] = $this->profile->network_suggest($page);
+            $data += $this->common_functions();
+
+            $this->data['content'] = $this->load->view('profile/'.$this->view_prefix.'profile', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+        else {
+            redirect('auth/login');
+        }
+    }
+
+    /*------------------------------------------------------------------*/
+
+    /**
+     * Function that calls the search library
+     */
+
+    public function search() {
+
+    }
+
+    /**
+     * This method shows the CKeditor for users to create user-pages/ Knowledge Content
+     *
+     */
+
+    public function knowledge()
+    {
+        // load
+        $this->load->library('knowledge');
+        if ($this->redux_auth->logged_in())
+        {
+
+            $data['user_pane'] = $this->knowledge->editor();
+            $data += $this->common_functions();
+            $this->data['content'] = $this->load->view('user/'.$this->view_prefix.'home', $data, true);
+            $this->load->view($this->tpl,  $this->data);
+
+        }
+
+         else {
+            redirect('auth/login');
+        }
+
+    }
+
+    /*------------------------------------------------------------------*/
+
+    /**
+     * Function to perfom common functions in this controller
+     */
+
+    private function common_functions($userid = 0) {
+        if($userid == 0) {
+            $userid = $this->session->userdata['userid'];
+        }
+        else {
+            $data['is_tracking'] = $this->relation->check_track($userid);
+            $data['is_connected'] = $this->relation->check_connection($userid);
+            $data['is_trackingback'] = $this->relation->check_trackback($userid);
+        }
+
+        $data['profile'] = $this->redux_auth->profile($userid);
+        $data['users_connections'] =$this->relation->users_connections();
+        $data['users_follows'] = $this->relation->users_tracks();
+        $data['suggest_connect'] = $this->relation->suggest_connect();
+        $data['suggest_follow'] = $this->relation->suggest_track();
+        $data['site_notifications'] = $this->site_notifications;
+        $data['priority_suggest_connect'] = $this->relation->suggest_connect_mutual();
+
+        $this->load->model('notification_model');
+        $notifications = $this->notification_model->all();
+        if($notifications) {
+            $data['user_notifications'] = $notifications;
+        }
+
+        return $data;
+    }
+
 
     /*
      * This function was put here due to very bad programming paradigms so kids
@@ -336,7 +574,6 @@ class user extends CI_Controller {
         foreach($the_receivers as $receiver) {
             $receiver = trim($receiver);
             if(!preg_match('/[0-9]/',$receiver) || !$this->relation_model->check_connect($receiver)) {
-
                 $this->form_validation->set_message('validate_receivers','Cannot send your message to some of your receiver(s)');
                 return false;
             }
@@ -345,8 +582,6 @@ class user extends CI_Controller {
         $this->messaging->receivers[] = $this->session->userdata['userid'];
         return true;
     }
-
-
 
 }
 

@@ -1,0 +1,430 @@
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <script type="text/javascript">
+//<![CDATA[
+document.domain = 'assembla.com';
+//]]>
+</script>
+    <title>trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css | Source/SVN | Assembla</title>
+    <link href="http://assets2.assembla.com/favicon.ico?1306321271" type="image/x-icon" rel="shortcut icon" />
+    <link href="http://assets1.assembla.com/favicon.ico?1306321271" type="image/x-icon" rel="icon" />
+
+    <link href="http://assets0.assembla.com/stylesheets/base_app_and_alerts_packaged.css?1307290920" media="all" rel="stylesheet" type="text/css" />
+    
+    <link href="http://assets1.assembla.com/stylesheets/code_packaged.css?1307290920" media="all" rel="stylesheet" type="text/css" />
+  
+
+          <style type="text/css" media="all" rel="stylesheet" id="branded_css">
+        
+        
+      </style>
+        
+    <link href="http://assets0.assembla.com/stylesheets/print.css?1307289487" media="print" rel="stylesheet" type="text/css" />
+
+    <!--[if IE 7]>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/ie7.css">
+    <![endif]-->
+
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/ie8.css">
+    <![endif]-->
+
+    <script src="http://assets2.assembla.com/javascripts/base_packaged.js?1307290912" type="text/javascript"></script>
+    
+    
+    
+    <script src="http://assets1.assembla.com/javascripts/code_packaged.js?1307290913" type="text/javascript"></script>
+  <script type="text/javascript">
+//<![CDATA[
+I18n.locale = 'en'
+//]]>
+</script>
+  
+
+
+    
+  
+  
+    
+
+
+    <!-- prevents swf file caching -->
+    <meta http-equiv="PRAGMA" content="NO-CACHE" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    
+
+  </head>
+  <body>
+    
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2641193-1']);
+    _gaq.push(['_setCustomVar',1,'Logged','false',1]);
+    
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+    })();
+  </script>
+
+
+
+    <div class="hidden">
+      <a href="#content">Skip to contents</a>
+    </div>
+
+    
+
+    <div id="header-w">
+
+  <div id="header" class="_">
+
+    <div id="header-links">
+      <div id="user-box">
+        
+  
+    
+      <a href="/features/compare" class="try-assembla">Try Assembla</a>
+    
+    <span>|</span>
+  
+  <a href="/user/login">Login</a>
+
+      </div>
+      <div>
+      <span id="space-role">Free/Public Space</span>
+      </div>
+    </div>
+
+    <div id="logo">
+      
+        <a href="/">
+          <img src="/images/assembla-logo-small.png" alt="Go to Assembla" title="Go to Assembla" />
+        </a>
+      
+    </div>
+
+    
+      
+        
+      
+    
+
+    
+      <h1 class="header-w clear-float">
+        <span>dance</span>
+      </h1>
+    
+
+    <div class="cut">&nbsp;</div>
+
+  </div><!-- /header -->
+</div><!-- /header-w -->
+
+    
+
+  
+    <div id="main-menu-w">
+      <ul class='clear-float' id='main-menu'><li class=''><a href="/spaces/terentyev/team">Team</a></li><li class=''><a href="/spaces/terentyev/stream">Stream</a></li><li class=''><a href="/spaces/terentyev/tickets">Tickets</a></li><li class=''><a href="/spaces/terentyev/time_entries">Time</a></li><li class='current'><a href="/code/terentyev/subversion/nodes">Source/SVN</a></li><li class="search-field"><form action="/spaces/terentyev/search" id="search-form" method="get"><input id="object_scope_top_right" name="object_scope" type="hidden" value="10" />
+<input class="main-search" id="q" name="q" onfocus="this.value == 'Search this space' ? this.value = '' : true" size="15" type="text" value="Search this space" />
+</form></li></ul>
+    </div><!-- /main-menu-w -->
+  
+
+  
+    <ul class='menu-submenu'><li><a href="/code/terentyev/subversion/nodes" class="first selected">Browse</a></li><li><a href="/code/terentyev/subversion/changesets" class="">Changesets</a></li><li><a href="/code/terentyev/subversion/changesets/comments" class="">Comments</a></li><li><a href="/code/terentyev/subversion/merge_requests" class="">Patch Requests</a></li><li><a href="/code/terentyev/subversion/forks" class="">Fork Network</a></li><li><a href="/code/terentyev/subversion/sites" class="">Sites</a></li><li><a href="/code/terentyev/subversion/repo/instructions" class="">Instructions</a></li></ul><div class='cut'></div>
+  
+
+    
+      <script type="text/javascript">
+      if(!Breakout){var Breakout = {};}
+      Breakout.space_wiki_name = "terentyev";
+          </script>
+    
+
+
+    <div id="content" >
+      
+      <script type="text/javascript">
+//<![CDATA[
+hideFlashNotice();
+//]]>
+</script>
+      
+      
+  
+  
+
+  <div class="repository-browser">
+  <h1 class="icon-breadcrumb-path"><a href="/code/terentyev/subversion/nodes?rev=67" class="root">root</a>/<a href="/code/terentyev/subversion/nodes/trunk?rev=67">trunk</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites?rev=67">sites</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites/all?rev=67">all</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules?rev=67">modules</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop?rev=67">imagefield_crop</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop?rev=67">Jcrop</a>/<a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css?rev=67">css</a>/<span>jquery.Jcrop.css</span><span>    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+            width="110"
+            height="14"
+            id="clippy" >
+    <param name="movie" value="/clippy.swf"/>
+    <param name="allowScriptAccess" value="always" />
+    <param name="quality" value="high" />
+    <param name="scale" value="noscale" />
+    <param NAME="FlashVars" value="text=http://www.assembla.com/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?rev=67" />
+    <param name="bgcolor" value="#FFFFFF" />
+    <param name="wmode" value="transparent" />
+    <embed src="/clippy.swf"
+           width="110"
+           height="14"
+           name="clippy"
+           quality="high"
+           allowScriptAccess="always"
+           type="application/x-shockwave-flash"
+           pluginspage="http://www.macromedia.com/go/getflashplayer"
+           FlashVars="text=http://www.assembla.com/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?rev=67"
+           bgcolor="#FFFFFF"
+           wmode="transparent"
+    />
+    </object>
+</span></h1>
+  
+
+<div class="commit-infobox">
+  <div class="commit-options">
+    <a href="/code/terentyev/subversion/node/logs/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?rev=67" class="revision-log" rel="nofollow">Revision log</a>
+    
+      <div style="margin-right: 10px;" class="small-icon-button">
+        <a href="/code/terentyev/subversion/node/live/67/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css" class="view-icon" rel="nofollow">View as a web page</a>
+      </div>
+    
+
+    
+      
+  <div style="margin-right: 10px;" class="small-icon-button">
+    <a class="download-icon" href="#" onclick="nobotGoto('!/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?_format=raw&amp;rev=67'); return false;">Download</a>
+  </div>
+
+
+    
+
+    
+    <div style="margin-right: 10px;" class="small-icon-button">
+      <a href="/code/terentyev/subversion/sites/new?path=trunk%2Fsites%2Fall%2Fmodules%2Fimagefield_crop%2FJcrop%2Fcss%2Fjquery.Jcrop.css" class="publish-icon" title="Publish as a Web site">Publish</a>
+    </div>
+    
+  </div>
+
+  <div class="committer-pic">
+    <img alt="User picture" src="http://assets1.assembla.com/images/no-picture.png?1307289487" />
+  </div>
+
+  
+<div class="commit-info">
+  
+
+      <p class="committer-info"><span>Author:</span> <a href="/profile/mamont77" tabindex="-1" target="_blank" title="Show Profile">Ruslan Piskarev</a></p>
+  
+
+  <p class="committer-info"><span>Revision:</span> <a href="/code/terentyev/subversion/changesets/66">66</a> (<span>«<a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?rev=66">Previous</a></span> <span><a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css?rev=68">Next</a>»</span> <a href="/code/terentyev/subversion/nodes/trunk/sites/all/modules/imagefield_crop/Jcrop/css/jquery.Jcrop.css">Latest</a>)</p>
+  <p class="commit-date">(Aug 25 19:44 2010 UTC) 10 months ago</p>
+</div>
+
+
+  <p class="commit-description">
+    <pre>re <a href="/spaces/terentyev/tickets/38" onclick="cancelEventBubble(event);">#38</a>: Скачал, включил модули. Настроил нужные модули и сопуствующие. Добавил часть полей, настроил их, что успел.</pre>
+  </p>
+</div>
+
+<div class="cut">&nbsp;</div>
+
+
+  
+    
+
+    
+
+    <a href="#" onclick="$(&quot;ln-num&quot;).toggle(); return false;">Show/hide line numbers</a>
+
+    <table class="ln-code">
+      <tbody class="full-width">
+        <tr>
+          <th id="ln-num" style="display: none;">
+            <pre><a href="#ln1" class="block" id="ln1">1</a>
+<a href="#ln2" class="block" id="ln2">2</a>
+<a href="#ln3" class="block" id="ln3">3</a>
+<a href="#ln4" class="block" id="ln4">4</a>
+<a href="#ln5" class="block" id="ln5">5</a>
+<a href="#ln6" class="block" id="ln6">6</a>
+<a href="#ln7" class="block" id="ln7">7</a>
+<a href="#ln8" class="block" id="ln8">8</a>
+<a href="#ln9" class="block" id="ln9">9</a>
+<a href="#ln10" class="block" id="ln10">10</a>
+<a href="#ln11" class="block" id="ln11">11</a>
+<a href="#ln12" class="block" id="ln12">12</a>
+<a href="#ln13" class="block" id="ln13">13</a>
+<a href="#ln14" class="block" id="ln14">14</a>
+<a href="#ln15" class="block" id="ln15">15</a>
+<a href="#ln16" class="block" id="ln16">16</a>
+<a href="#ln17" class="block" id="ln17">17</a>
+<a href="#ln18" class="block" id="ln18">18</a>
+<a href="#ln19" class="block" id="ln19">19</a>
+<a href="#ln20" class="block" id="ln20">20</a>
+<a href="#ln21" class="block" id="ln21">21</a>
+<a href="#ln22" class="block" id="ln22">22</a>
+<a href="#ln23" class="block" id="ln23">23</a>
+<a href="#ln24" class="block" id="ln24">24</a>
+<a href="#ln25" class="block" id="ln25">25</a>
+<a href="#ln26" class="block" id="ln26">26</a>
+<a href="#ln27" class="block" id="ln27">27</a>
+<a href="#ln28" class="block" id="ln28">28</a>
+<a href="#ln29" class="block" id="ln29">29</a>
+<a href="#ln30" class="block" id="ln30">30</a>
+<a href="#ln31" class="block" id="ln31">31</a>
+<a href="#ln32" class="block" id="ln32">32</a>
+<a href="#ln33" class="block" id="ln33">33</a>
+<a href="#ln34" class="block" id="ln34">34</a>
+<a href="#ln35" class="block" id="ln35">35</a></pre></th>
+          <td><pre class="prettyprint lang-css">/* Fixes issue here http://code.google.com/p/jcrop/issues/detail?id=1 */
+.jcrop-holder { text-align: left; }
+
+.jcrop-vline, .jcrop-hline
+{
+	font-size: 0;
+	position: absolute;
+	background: white url('Jcrop.gif') top left repeat;
+}
+.jcrop-vline { height: 100%; width: 1px !important; }
+.jcrop-hline { width: 100%; height: 1px !important; }
+.jcrop-handle {
+	font-size: 1px;
+	width: 7px !important;
+	height: 7px !important;
+	border: 1px #eee solid;
+	background-color: #333;
+	*width: 9px;
+	*height: 9px;
+}
+
+.jcrop-tracker { width: 100%; height: 100%; }
+
+.custom .jcrop-vline,
+.custom .jcrop-hline
+{
+	background: yellow;
+}
+.custom .jcrop-handle
+{
+	border-color: black;
+	background-color: #C7BB00;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}</pre></td>
+        </tr>
+      </tbody>
+    </table>
+  
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+if (window.location.href.split("#").length != 1) { $("ln-num").show(); }
+//]]>
+</script>
+
+
+  <script type="text/javascript">
+//<![CDATA[
+prettyPrint()
+//]]>
+</script>
+
+
+
+  
+
+    </div><!-- /content -->
+
+    
+  
+
+    <div id="footer-w">
+  <div class="tutorial-and-bookmark">
+          <div class="video-link" style="text-align: center;"><a href="/features/popup_video?video=12" rel="fancybox">Watch our tutorial video for the Source/SVN Tool</a></div>
+    
+    
+      
+        <!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style" style="margin-right:20px">
+  <a href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4bb1fb7f05797876" class="addthis_button_compact">Share</a>
+  <span class="addthis_separator">|</span>
+  <a class="addthis_button_facebook"></a>
+  <a class="addthis_button_myspace"></a>
+  <a class="addthis_button_google"></a>
+  <a class="addthis_button_twitter"></a>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+document.write(
+  '<sc'+'ript src="http'+
+  (document.location.protocol=='https:'?'s://':'://')+
+  's7.addthis.com/js/250/addthis_widget.js#username=xa-4bb1fb7f05797876"></sc'+'ript>'
+);
+//]]>
+</script>
+<!-- AddThis Button END -->
+<div class="cut"></div>
+
+      
+    
+  </div>
+
+  
+
+  <div id="footer">
+    
+
+    <p>
+      <a href="/">Home</a>
+      / <a href="/community">Community</a>
+    
+      / <a href="/features">Tour</a>
+      / <a href="/catalog/10">Get a Space</a>
+      &nbsp; - &nbsp; Solutions for <a href="/features/bug-tracking">Bug &amp; Issue Tracking</a>, <a href="http://www.assembla.com/features/collaboration">Collaboration Tools</a>, <a href="http://offers.assembla.com/free-subversion-hosting">Free Subversion Hosting</a>, <a href="http://offers.assembla.com/free-git-hosting">Free GIT Hosting</a>
+
+    
+    </p>
+
+    
+
+    <p id="copyr-contact">
+       Dance is powered by Assembla Portfolio. <a href="http://portfolio.assembla.com">Learn More</a>
+  </p>
+
+  </div><!-- /footer -->
+</div><!-- /footer-w -->
+
+
+
+    
+  
+  
+
+
+
+
+
+  </body>
+</html>
+
+

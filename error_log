@@ -1,0 +1,133 @@
+[17-May-2011 08:24:29] PHP Fatal error:  Call to a member function clear() on a non-object in /home/mobiproj/public_html/test/application/models/signup_model.php on line 50
+[17-May-2011 08:40:31] PHP Fatal error:  Call to a member function clear() on a non-object in /home/mobiproj/public_html/test/application/models/signup_model.php on line 50
+[17-May-2011 08:46:34] PHP Fatal error:  Call to a member function send() on a non-object in /home/mobiproj/public_html/test/application/models/signup_model.php on line 57
+[19-May-2011 04:42:56] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 172
+[19-May-2011 04:43:04] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 172
+[19-May-2011 04:52:15] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 172
+[19-May-2011 04:54:42] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 158
+[19-May-2011 04:55:39] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 158
+[19-May-2011 05:29:40] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 176
+[19-May-2011 05:32:50] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:33:14] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:35:02] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:40:51] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:41:30] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:41:31] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:41:32] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:41:34] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:55:44] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 182
+[19-May-2011 05:57:55] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 177
+[19-May-2011 06:13:33] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 177
+[19-May-2011 06:22:45] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 177
+[19-May-2011 06:53:39] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 176
+[19-May-2011 06:55:09] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 175
+[19-May-2011 07:01:00] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 278
+[19-May-2011 07:05:23] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 280
+[19-May-2011 07:16:01] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 280
+[19-May-2011 07:16:58] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 280
+[19-May-2011 07:17:01] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 280
+[19-May-2011 07:17:02] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 280
+[19-May-2011 07:55:25] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 281
+[19-May-2011 07:56:29] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 288
+[19-May-2011 07:56:46] PHP Fatal error:  Cannot use [] for reading in /home/mobiproj/public_html/test/application/models/relation_model.php on line 288
+[04-Jun-2011 08:06:23] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING in /home/mobiproj/public_html/test/application/views/updates/view.php on line 65
+[04-Jun-2011 08:06:28] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING in /home/mobiproj/public_html/test/application/views/updates/view.php on line 65
+[04-Jun-2011 08:07:19] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING in /home/mobiproj/public_html/test/application/views/updates/view.php on line 65
+[04-Jun-2011 08:19:05] PHP Parse error:  syntax error, unexpected T_VARIABLE, expecting ',' or ';' in /home/mobiproj/public_html/test/application/views/updates/view.php on line 67
+[04-Jun-2011 08:54:36] PHP Parse error:  syntax error, unexpected ';', expecting ')' in /home/mobiproj/public_html/test/application/views/updates/view.php on line 29
+[04-Jun-2011 11:08:14] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:08:44] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:09:38] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:09:42] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:13:58] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:14:29] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:17:11] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:18:01] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:18:38] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:22:51] PHP Parse error:  syntax error, unexpected T_STRING in /home/mobiproj/public_html/test/application/views/before.html on line 1
+[04-Jun-2011 11:36:56] PHP Fatal error:  Call to a member function is_mobile() on a non-object in /home/mobiproj/public_html/test/application/controllers/auth.php on line 238
+[04-Jun-2011 11:46:12] PHP Fatal error:  Call to a member function is_mobile() on a non-object in /home/mobiproj/public_html/test/application/libraries/redux_auth.php on line 316
+[06-Jun-2011 04:47:29] PHP Parse error:  syntax error, unexpected T_FOREACH, expecting ',' or ';' in /home/mobiproj/public_html/test/application/views/updates/m-view.php on line 30
+[06-Jun-2011 06:27:36] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:27:40] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:27:48] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:27:56] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:27:57] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:29:07] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 06:29:43] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:29:45] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:29:54] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:30:30] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:30:36] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:30:40] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:30:52] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:30:59] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:31:29] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 109
+[06-Jun-2011 06:33:36] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 69
+[06-Jun-2011 06:44:35] PHP Fatal error:  Can't use method return value in write context in /home/mobiproj/public_html/test/application/controllers/user.php on line 70
+[06-Jun-2011 07:18:07] PHP Fatal error:  Call to a member function profile() on a non-object in /home/mobiproj/public_html/test/application/libraries/update.php on line 325
+[06-Jun-2011 07:20:53] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/updates/m-view.php on line 5
+[10-Jun-2011 02:46:53] PHP Fatal error:  Call to a member function is_mobile() on a non-object in /home/mobiproj/public_html/test/application/controllers/auth.php on line 30
+[10-Jun-2011 02:47:23] PHP Fatal error:  Call to a member function mobile() on a non-object in /home/mobiproj/public_html/test/application/controllers/auth.php on line 32
+[11-Jun-2011 08:29:30] PHP Fatal error:  Call to a member function post() on a non-object in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 326
+[11-Jun-2011 08:31:33] PHP Fatal error:  Call to undefined method user::relation_model() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 333
+[11-Jun-2011 08:35:03] PHP Fatal error:  Call to undefined method user::relation_model() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 333
+[11-Jun-2011 08:41:48] PHP Fatal error:  Call to undefined method user::relation_model() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 333
+[11-Jun-2011 08:43:59] PHP Fatal error:  Call to undefined method user::relation_model() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 333
+[11-Jun-2011 08:44:09] PHP Fatal error:  Call to undefined method user::relation_model() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 333
+[11-Jun-2011 08:45:52] PHP Fatal error:  Call to undefined method Relation_model::get_userdata() in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 332
+[11-Jun-2011 08:47:04] PHP Fatal error:  Call to a member function set_userdata() on a non-object in /home/mobiproj/public_html/test/application/libraries/messaging.php on line 334
+[13-Jun-2011 08:19:31] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 431
+[13-Jun-2011 08:20:29] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:20:42] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:20:56] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:22:01] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:22:10] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:22:20] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:22:48] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[13-Jun-2011 08:23:01] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/mobiproj/public_html/test/application/controllers/user.php on line 430
+[14-Jun-2011 03:32:25] PHP Fatal error:  Call to a member function last_query() on a non-object in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 03:33:10] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:33:55] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:34:32] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:42:37] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:42:46] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:54:09] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 03:58:12] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:01:57] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:03:21] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:05:19] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:06:34] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:07:12] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:10:37] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:11:40] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:12:52] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:12:55] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:12:58] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:16:02] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:16:51] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:17:27] PHP Fatal error:  Cannot use object of type CI_DB_mysql_result as array in /home/mobiproj/public_html/test/application/views/profile/m-follows.php on line 5
+[14-Jun-2011 04:58:03] PHP Fatal error:  Call to undefined method relation::users_follows() in /home/mobiproj/public_html/test/application/controllers/user.php on line 376
+[14-Jun-2011 04:59:31] PHP Fatal error:  Call to undefined method relation::users_follows() in /home/mobiproj/public_html/test/application/controllers/user.php on line 376
+[14-Jun-2011 05:00:10] PHP Fatal error:  Call to undefined method relation::users_follows() in /home/mobiproj/public_html/test/application/controllers/user.php on line 376
+[14-Jun-2011 11:32:05] PHP Fatal error:  Call to undefined method Relation_model::get_connection() in /home/mobiproj/public_html/test/application/libraries/relation.php on line 52
+[14-Jun-2011 11:32:14] PHP Fatal error:  Call to undefined method Relation_model::get_connection() in /home/mobiproj/public_html/test/application/libraries/relation.php on line 52
+[14-Jun-2011 11:32:25] PHP Fatal error:  Call to undefined method Relation_model::get_connection() in /home/mobiproj/public_html/test/application/libraries/relation.php on line 52
+[14-Jun-2011 11:33:16] PHP Fatal error:  Call to undefined method Relation_model::get_connection() in /home/mobiproj/public_html/test/application/libraries/relation.php on line 52
+[14-Jun-2011 11:33:55] PHP Fatal error:  Call to undefined method Relation_model::get_connection() in /home/mobiproj/public_html/test/application/libraries/relation.php on line 52
+[14-Jun-2011 11:53:05] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:53:30] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:55:58] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:56:08] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:56:38] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:56:43] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:56:53] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 11:57:48] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 12:00:05] PHP Fatal error:  Call to undefined method Relation_model::get_tracks() in /home/mobiproj/public_html/test/application/libraries/profile.php on line 46
+[14-Jun-2011 12:24:48] PHP Fatal error:  Call to undefined method profile::connections() in /home/mobiproj/public_html/test/application/controllers/user.php on line 386
+[14-Jun-2011 12:26:16] PHP Fatal error:  Call to undefined method profile::connections() in /home/mobiproj/public_html/test/application/controllers/user.php on line 386
+[15-Jun-2011 07:34:23] PHP Fatal error:  Call to undefined method Redux_auth_model::bio() in /home/mobiproj/public_html/test/application/libraries/redux_auth.php on line 191
+[15-Jun-2011 07:44:34] PHP Fatal error:  Call to a member function post() on a non-object in /home/mobiproj/public_html/test/application/libraries/profile.php on line 86
+[15-Jun-2011 09:02:36] PHP Fatal error:  Call to a member function network() on a non-object in /home/mobiproj/public_html/test/application/controllers/user.php on line 92
+[15-Jun-2011 15:44:43] PHP Fatal error:  Call to a member function is_browser() on a non-object in /home/mobiproj/public_html/test/application/controllers/auth.php on line 242
+[15-Jun-2011 15:46:20] PHP Fatal error:  Call to a member function is_browser() on a non-object in /home/mobiproj/public_html/test/application/controllers/auth.php on line 279

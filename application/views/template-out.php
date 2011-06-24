@@ -12,6 +12,7 @@
         <![endif]-->
         <?php echo link_tag('assets/css/style.css')."\n"; ?>
         <?php echo link_tag('assets/css/typography.css')."\n"; ?>
+		<?php echo link_tag('assets/css/menu.css')."\n"; ?>
         <?php if(isset($styles)) echo $styles; ?>
 
         <?php echo $libraries; ?>
@@ -20,19 +21,33 @@
 
     </head>
     <body>
+	
+		<div id="head-wrapper">
+			<div id="head-area">
+				<div id="logo">
+				</div>
+			
+				<div id="search">
+				</div>
+				
+				<div id="links">
+						<ul id="menu">
+							 <li><?php echo anchor('', 'Home'); ?></li>
+							<li><?php echo anchor('auth/register', 'Register'); ?></li>
+							<li><?php echo anchor('auth/login', 'Login'); ?></li>
+					
+					
+						</ul>
+				</div>	
+			</div>
+		</div>
+		<div id="splice">
+		</div>
         <div id="wrapper">
             <div id="head">
 
             </div>
-            <ul id="navigation">
-                <li><?php echo anchor('', 'Home'); ?></li>
-                <li><?php echo anchor('auth/register', 'Register'); ?></li>
-                <li><?php echo anchor('auth/login', 'Login'); ?></li>
-                <li><?php echo anchor('auth/status', 'Account Status'); ?></li>
-                <li><?php echo anchor('auth/forgotten_password', 'Forgotten Password'); ?></li>
-
-
-            </ul>
+         
 
             <ul id="navigation-user">
 

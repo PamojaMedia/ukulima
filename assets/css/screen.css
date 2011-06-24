@@ -22,7 +22,7 @@ blockquote, q {quotes:"" "";}
 a img {border:none;}
 
 /* typography.css */
-body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;}
+body {font-size:75%;color:#222;background:#fff;font-family:Verdana,, Arial, Helvetica, sans-serif;}
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
 h1 {font-size:3em;line-height:1;margin-bottom:0.5em;}
 h2 {font-size:2em;margin-bottom:0.75em;}
@@ -35,7 +35,7 @@ p {margin:0 0 1.5em;}
 p img.left {float:left;margin:1.5em 1.5em 1.5em 0;padding:0;}
 p img.right {float:right;margin:1.5em 0 1.5em 1.5em;}
 a:focus, a:hover {color:#000;}
-a {color:#009;text-decoration:underline;}
+a {color: #009900; text-decoration: none; }
 blockquote {margin:1.5em;color:#666;font-style:italic;}
 strong {font-weight:bold;}
 em, dfn {font-style:italic;}
@@ -45,7 +45,7 @@ abbr, acronym {border-bottom:1px dotted #666;}
 address {margin:0 0 1.5em;font-style:italic;}
 del {color:#666;}
 pre {margin:1.5em 0;white-space:pre;}
-pre, code, tt {font:1em 'andale mono', 'lucida console', monospace;line-height:1.5;}
+pre, code, tt {line-height:1.5;}
 li ul, li ol {margin:0 1.5em;}
 ul, ol {margin:0 1.5em 1.5em 1.5em;}
 ul {list-style-type:disc;}
@@ -241,10 +241,11 @@ input.text, input.title, textarea, select {margin:0.5em 0;border:1px solid #bbb;
 input.text:focus, input.title:focus, textarea:focus, select:focus {border:1px solid #666;}
 input.text, input.title {width:300px;padding:5px;}
 input.title {font-size:1.5em;}
-textarea {width:390px;height:25px;padding:5px;}
-.error, .notice, .success {padding:.8em;margin-bottom:1em;border:2px solid #ddd;}
+textarea {width:390px;height:25px;padding:5px; font-family:Verdana, Arial, Helvetica, sans-serif; }
+.error, .success {padding:.8em;margin-bottom:1em;border:2px solid #ddd;}
+.notice{padding:.8em;margin-bottom:1em;}
 .error {background:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
-.notice {background:#FFF6BF;color:#514721;border-color:#FFD324;}
+
 .success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
 .error a {color:#8a1f11;}
 .notice a {color:#514721;}

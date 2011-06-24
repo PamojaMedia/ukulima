@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://ukulima.net/test';
+$config['base_url']	= '';
 
 /*
 |--------------------------------------------------------------------------

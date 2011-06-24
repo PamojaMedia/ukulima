@@ -28,11 +28,17 @@ class relation
 	 * @return void
 	 * @author Mathew
 	 **/
+
+        private $site_notifications = array();
+
 	public function __construct()
 	{
-		$this->ci =& get_instance();
-                // Load the relation model for checking connection and follow status.
-        $this->ci->load->model('relation_model');
+            $this->ci =& get_instance();
+            // Load the relation model for checking connection and follow status.
+            $this->ci->load->model('relation_model');
+            /*change here also! variable to hold the user notifications config */
+            $this->ci->load->config('notifications');
+            $this->site_notifications = $this->ci->config->item('site_notifications');
 
 	}
         /**
@@ -42,16 +48,14 @@ class relation
          */
         public function users_connections()
         {
-            $this->ci->relation_model->profile_users_connect();
-            $data = $this->ci->relation_model->connection_1;
+            $data = $this->ci->relation_model->user_connections($this->ci->session->userdata['userid'],20,0);
             
             return $data;
         }
 
-        public function users_follows()
+        public function users_tracks()
         {
-            $this->ci->relation_model->profile_users_follow();
-            $data = $this->ci->relation_model->follow_1;
+            $data = $this->ci->relation_model->tracks($this->ci->session->userdata['userid'],20,0);
 
             return $data;
         }
@@ -63,8 +67,8 @@ class relation
 
         public function suggest_connect()
         {
-            $this->ci->relation_model->user_suggest_connect();
-            $data = $this->ci->relation_model->suggest_connect;
+            $data = $this->ci->relation_model->user_suggest_connect();
+
             return $data;
         }
 
@@ -75,8 +79,7 @@ class relation
 
         public function suggest_connect_mutual()
         {
-            $this->ci->relation_model->suggestconnect_mutualfollows();
-            $data = $this->ci->relation_model->suggest_connect_mutual_follow;
+            $data =  $this->ci->relation_model->suggest_connect_mutual_tracks();
 
             return $data;
 
@@ -86,19 +89,95 @@ class relation
          *  retreive users the logged in user can follow
          *
          */
-        public function suggest_follow()
+        public function suggest_track()
         {
-            $this->ci->relation_model->user_suggest_follow();
-            $data = $this->ci->relation_model->suggest_follow;
+            $data = $this->ci->relation_model->user_suggest_track();
+            
             return $data;
         }
 
        
 
-        public function follow($followid)
+        public function track($trackid)
         {
+            // load notifictation model
+             $this->ci->load->model('notification_model','notifications');
+
+            //user id to be passed to the relation model for follow action
             $userid = $this->ci->session->userdata('userid');
-            return $this->ci->relation_model->follow_user($userid,$followid);
+
+            // retrieve the ID of the follow event
+            $notify = $this->ci->relation_model->track_user($userid,$trackid);
+
+            if($notify)
+            {
+                $this->ci->notifications->set_notification($this->site_notifications['follow'],$notify,$trackid);
+            }
+            return $notify;
+
+
+         
+        }
+
+        /**
+         *  Method to view a follow that has been notified to the user
+         *
+         */
+        public function view_track($id)
+        {
+            //the id being passed is of the person following the logged in user
+
+        $this->ci->load->model('notification_model','notifications');
+        $this->ci->notifications->noted($id,$this->site_notifications['follow']);
+     
+        }
+
+        /**
+         *
+         *  Method to do a connect
+         *  @param $connectid the id of the user the logged in user intends to connect to
+         */
+        public function connect($connectid)
+        {
+            // load notification model
+             $this->ci->load->model('notification_model','notifications');
+            // retrieve the ID of the follow event
+
+            $notify = $this->ci->relation_model->connect_user($connectid);
+            if($notify)
+            {
+                if($notify['set_notification']) {
+                    $this->ci->notifications->set_notification($this->site_notifications['connect'],$notify['event_id'],$connectid);
+                }
+                else {
+                    $this->ci->notifications->noted($connectid,$this->site_notifications['connect']);                    
+                }
+                return true;
+            }
+
+            return false;
+
+        }
+
+        function check_connection($userid = 0) {
+            if($userid > 0) {
+                return $this->ci->relation_model->check_connect($userid);
+            }
+            return false;
+        }
+
+        function check_track($userid = 0) {
+            if($userid > 0) {
+                return $this->ci->relation_model->check_track($userid);
+            }
+            return false;
+        }
+
+        function check_trackback($userid = 0) {
+            if($userid > 0) {
+                return $this->ci->relation_model->check_user_trackback($userid);
+            }
+            return false;
         }
 
 }

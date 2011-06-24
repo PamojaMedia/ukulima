@@ -7,6 +7,8 @@
 -- Server version: 5.0.92
 -- PHP Version: 5.2.6
 
+
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 

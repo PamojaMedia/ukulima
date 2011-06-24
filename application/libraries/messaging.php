@@ -42,6 +42,13 @@ class messaging {
     public  $receivers = array();
 
     private $site_notifications = array();
+
+    // limit to the number of messages to be viewed. This is the limit for browser
+    private $msg_count = 20;
+
+    // set the prefix for the views. used when the browser is mobile. the views have an m- prefix. for browsers, there is no prefix
+    private $view_prefix = '';
+
     /**
      * __construct
      *
@@ -63,16 +70,22 @@ class messaging {
         $this->ci->load->model('relation_model');
         $this->data = $this->ci->redux_auth->get_browser('messages');
 
+        if($this->ci->agent->is_mobile()) {
+            $this->msg_count = 10;
+            $this->view_prefix = 'm-';
+        }
 
     }
 
     /**
      * Method for displaying all the relevant messages when a user views thier profile page
      */
-    public function all() {
-        // get all the messages of the logged in user from the model
+    public function all($page = 0) {
+        // index from which to start the query
+        $start = $page * $this->msg_count;
 
-        $result['messages'] = $this->ci->messaging_model->get();
+        // get the set number of messages
+        $result['messages'] = $this->ci->messaging_model->get($this->msg_count, $start);
 
         // set the error message in case the user has no messages
         $result['error_message'] = 'You have not sent or received any updates yet';
@@ -80,18 +93,16 @@ class messaging {
         $form = '';
         if(!count($result['messages'])) {
             // load the view for creating the form for posting messages and save the result in the $form variable
-            $form = $this->ci->load->view('messages/form','',true);
+            $form = $this->ci->load->view('messages/'.$this->view_prefix.'form','',true);
         }
 
         // load the view for displaying the messages and comments and save the result in messages $variable
-        $messages = $this->ci->load->view('messages/view_all',$result,true);
+        $messages = $this->ci->load->view('messages/'.$this->view_prefix.'view_all',$result,true);
 
         // put the form and messages as the page contents
         $this->data['content'] = $form.$messages;
 
         return $this->data;
-        // load the page template with the content data.
-        ///$this->ci->load->view('template',$this->data);
 
     }
 
@@ -101,7 +112,7 @@ class messaging {
      */
     public function view($msgid = 0) {
 
-        // load the notification model and set any notice about the update as viewed.
+        // load the notification model and set any notice about the message as viewed.
         $this->ci->load->model('notification_model','notifications');
         $this->ci->notifications->noted($msgid,$this->site_notifications['message']);
 
@@ -112,13 +123,13 @@ class messaging {
         $result['error_message'] = 'The message was not found';
 
         // load the view for displaying the message and it's replies and save the result in messages $variable
-        $messages = $this->ci->load->view('messages/view',$result,true);
+        $messages = $this->ci->load->view('messages/'.$this->view_prefix.'view',$result,true);
 
         $form = '';
         if($result['messages']) {
             $data['msgid'] = $msgid;
             // load the view for creating the form for posting messages and save the result in the $form variable
-            $form = $this->ci->load->view('messages/form',$data,true);
+            $form = $this->ci->load->view('messages/'.$this->view_prefix.'form',$data,true);
         }
 
         // put the update as the page contents
@@ -134,7 +145,7 @@ class messaging {
      *
      */
     public function compose() {
-        $form = $this->ci->load->view('messages/form','',true);
+        $form = $this->ci->load->view('messages/'.$this->view_prefix.'form','',true);
 
         // put the form and messages as the page contents
         $this->data['content'] = $form;
@@ -168,8 +179,11 @@ class messaging {
                 $send = true;
                 $message = 'Your Message has been sent successfully.';
 
+                // if the message was sent from mobile, unset the receiver array
+                $this->ci->session->unset_userdata('receiver_details');
+
                 $this->ci->load->model('notification_model','notifications');
-                $this->ci->notifications->set_notification($this->user_notifications['message'],$msg_id,$this->receivers);
+                $this->ci->notifications->set_notification($this->site_notifications['message'],$msg_id,$this->receivers);
             }
             else {
 
@@ -187,18 +201,18 @@ class messaging {
 
     /**
      * Method to delete an update or comment
-     * @param <int> $content_id the update/comment to delete
+     * @param <int> $msgid the update/comment to delete
      */
 
     public function delete($msgid = 0) {
-        $delete = false; // variable to indicate whether the creation was successful
+        $delete = false; // variable to indicate whether the deletion was successful
         $message = ''; // the message to indicate success or failure
 
         // if there is content to be deleted
         if($msgid > 0 || $this->ci->input->post('number') > 0) {
             // put the value in the post array
             if($msgid > 0) {
-                $_POST['number'] = $content_id;
+                $_POST['number'] = $msgid;
             }
 
             // run validation
@@ -229,17 +243,33 @@ class messaging {
     }
 
 
-    function friends() {
-        $friends = $this->ci->messaging_model->friends($this->ci->input->post('q'));
-
-        foreach($friends as $friend) {
-            $arr[] = array (
-                    'id' => $friend['userid'],
-                    'name' => $friend['firstname'].' '.$friend['lastname']
-            );
+    function friends($ajax = 0) {
+        if($ajax) {
+            $friends = $this->ci->messaging_model->friends($this->ci->input->post('q'));
+            foreach($friends as $friend) {
+                $arr[] = array (
+                        'id' => $friend['userid'],
+                        'name' => $friend['firstname'].' '.$friend['lastname']
+                );
+            }
+            echo json_encode($arr);
         }
+        else {
+            $data = array();
+            if(isset($this->ci->session->userdata['receiver_details'])) {
+                $data['receiver_details'] = $this->ci->session->userdata['receiver_details'];
+            }
+            $search = $this->ci->input->post('search');
+            if($search) {
+                $data['friends'] = $this->ci->messaging_model->friends($search);
+                return $this->ci->load->view('messages/m-select-friends',$data,true);
+            }
+            else {
+                return $this->ci->load->view('messages/m-select-friends',$data,true);
+            }
+        }
+        
 
-        echo json_encode($arr);
     }
 
 
@@ -279,7 +309,7 @@ class messaging {
                         $message = 'Your reply has been sent successfully.';
 
                         $this->ci->load->model('notification_model','notifications');
-                        $this->ci->notifications->set_notification($this->user_notifications['message'],$reply_id,$receivers);
+                        $this->ci->notifications->set_notification($this->site_notifications['message'],$reply_id,$receivers);
                     }
                     else {
                         $message = 'Failure: The reply was not sent.';
@@ -299,6 +329,44 @@ class messaging {
         // load the function to set the response with respect to whether the reply was posted by ajax or html post
         $this->set_response(intval($this->ci->input->post('ajax')), $reply, $message);
 
+    }
+
+    public function add_receivers() {
+        $receivers = $this->ci->input->post('receivers');
+        if($this->ci->form_validation->run('add_receivers') == false) {
+            $message = validation_errors('', ''); // if validation fails, set the error message
+        }
+        else {
+            $this->ci->load->model('relation_model');
+            $data['receiver_details'] = $this->ci->relation_model->get_userdetails($receivers);
+            if($data['receiver_details']) {
+                if(isset($this->ci->session->userdata['receiver_details'])) {
+                    $data['receiver_details'] = array_merge($this->ci->session->userdata['receiver_details'],$data['receiver_details']);
+                }
+                $this->ci->session->set_userdata($data);
+                return $this->ci->load->view('messages/m-select-friends',$data,true);
+            }
+        }
+        return $this->ci->load->view('messages/m-select-friends','',true);
+    }
+
+    public function remove_receiver($recid = 0) {
+        if($recid) {
+            $data['receiver_details'] = $this->my_array_diff($this->ci->session->userdata['receiver_details'],$this->ci->relation_model->get_userdetails($recid));
+            $this->ci->session->unset_userdata('receiver_details');
+            $this->ci->session->set_userdata($data);
+        }
+        
+    }
+
+    private function my_array_diff($receivers,$remove_receiver) {
+        $new_receivers = array();
+        foreach($receivers as $receiver) {
+            if($receiver['userid']!=$remove_receiver[0]['userid']) {
+                $new_receivers[] = $receiver;
+            }
+        }
+        return $new_receivers;
     }
 
     /**
@@ -326,11 +394,8 @@ class messaging {
                 $response = '<p class="error">'.$message.'</p>';
             }
             // flash the message
-            $this->ci->session->set_flashdata('message', $message);
+            $this->ci->session->set_flashdata('message', $response);
             // load the required function
-            //$this->all();
-
-            redirect('user/profile');
         }
     }
 

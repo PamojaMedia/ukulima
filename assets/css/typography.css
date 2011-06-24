@@ -8,16 +8,24 @@
 /* Default font settings. 
    The font-size percentage is of 16px. (0.75 * 16px = 12px) */
 body { 
-  font-size: 75%;
+  font-size: 11px;
   color: #222; 
   background: #fff;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+ 
 }
 
-
+body.logged-out { 
+  font-size: 11px;
+  color: #222; 
+  background: #e6ebe6;
+  height:auto;
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+ 
+}
 /* Headings
 -------------------------------------------------------------- */
-
+h1.login-title{font-size:28px; text-align:center; font-weight:bold; font-family:Verdana, Arial, sans-serif; color:#003300;}
 h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #111; }
 
 h1 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
@@ -42,7 +50,7 @@ p img.right { float: right; margin: 1.5em 0 1.5em 1.5em; }
 
 a:focus, 
 a:hover     { color: #000; }
-a           { color: #009; text-decoration: underline; }
+a           { color: #009900; text-decoration: none; }
 
 blockquote  { margin: 1.5em; color: #666; font-style: italic; }
 strong      { font-weight: bold; }
@@ -55,8 +63,8 @@ acronym     { border-bottom: 1px dotted #666; }
 address     { margin: 0 0 1.5em; font-style: italic; }
 del         { color:#666; }
 
-pre 				{ margin: 1.5em 0; white-space: pre; }
-pre,code,tt { font: 1em 'andale mono', 'lucida console', monospace; line-height: 1.5; }
+pre 				{ margin:0 0 1.5em 0; white-space: pre; }
+pre,code,tt { line-height: 1.5; }
 
 
 /* Lists

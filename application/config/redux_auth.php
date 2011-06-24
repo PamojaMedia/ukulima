@@ -41,7 +41,7 @@
 	 * A database column which is used to
 	 * login with.
 	 **/
-	$config['identity'] = 'email';
+	$config['identity'] = 'username';
 
 	/**
 	 * Email Activation for registration

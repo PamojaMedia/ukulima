@@ -15,7 +15,7 @@ foreach($messages as $message) {
             <?php echo anchor('user/view/'.$message['userid'],'<b>'.$message['firstname'].' '.$message['lastname'].'</b><br>'); ?>
             <?php echo $message['subject'].'<br>'; ?>
             <?php echo (strlen($message['content']>200))?substr($message[''],200).' ...':$message['content'].'<br>'; ?>
-            <?php echo anchor('user/view_message/'.$message['ID'],'view').' | forward | '.anchor('user/message_delete/'.$message['ID'],'delete').' <br><br>'; ?>
+            <?php echo anchor('user/view_message/'.$message['ID'],'view').' | '.anchor('user/delete_message/'.$message['msgid'],'delete').' <br><br>'; ?>
         </div>
     </div>
 

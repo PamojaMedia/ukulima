@@ -10,12 +10,12 @@
 
             echo '<div id="message_text'.$message['msgid'].'">';
 
-            echo $message['content'];
+            echo anchor('user/view/' . $message['userid'], '<b>' . $message['firstname'] . ' ' . $message['lastname'] . '</b> ') .$message['content'];
 
             echo '<br> --------------------------------- ';
 
             if($message['parentid']) {
-                echo anchor('messaging/delete/'.$message['msgid'], 'Delete', array('class' => 'delete', 'id' => $message['msgid']));
+                echo anchor('user/delete_message/'.$message['msgid'], 'Delete', array('class' => 'delete', 'id' => $message['msgid']));
             }
 
             echo '<br></div>';

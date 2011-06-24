@@ -52,7 +52,7 @@
 <table>
     <thead>
         <tr>
-            <th colspan="2">Optional Fields</th>
+            
         </tr>
     </thead>
     <tbody>

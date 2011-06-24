@@ -22,7 +22,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="2"><?php echo form_submit('submit', 'Login'); ?></td>
+            <td colspan="2"><?php echo form_submit('submit', 'Login'); ?></td> <td><?php echo anchor('auth/forgotten_password', 'Forgotten Password'); ?></td>
         </tr>
     </tfoot>
 </table>

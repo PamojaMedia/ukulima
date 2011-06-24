@@ -36,11 +36,16 @@ class Update_model extends CI_Model {
      * @param <int> $userid the userid of the user to get updates and comments from
      * @return <array> an array containing the updates and comments
      */
-    public function all($userid = 0) {
+    public function all($userid = 0, $count = 20, $start = 0) {
         // select id, update & parentid of updates from selected user. the updates should not be deleted.
         // either the user wrote the update or it was written on his wall.
         // limit them to 20
-        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid')
+
+        // escape the data to be used in query that will not be automatically escaped
+        $userid = $this->db->escape($userid);
+        $start = $this->db->escape($start);
+
+        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid,updates.count')
                 ->from('updates,people')
                 ->where('parentid = ',0)
                 ->where('deleted = ',0)
@@ -48,8 +53,8 @@ class Update_model extends CI_Model {
                 ' OR updates.userid IN (select userid_2 from connect where userid_1 = '.$userid.' and connectstatus = 1)'.
                 ' OR updates.userid IN (select userid_1 from connect where userid_2 = '.$userid.' and connectstatus = 1)'.
                 ' OR updates.userid IN (select userid_2 from follow where userid_1 = '.$userid.' and followstatus = 1))')
-                ->where('people.userid = updates.userid','',FALSE)
-                ->limit(20)
+                ->where('people.userid = updates.userid','',false)
+                ->limit($count,$start)
                 ->order_by("date","desc");
         $updates = $this->db->get()->result_array();
 
@@ -71,7 +76,7 @@ class Update_model extends CI_Model {
                     ->from('updates,people')
                     ->where('deleted = ',0)
                     ->where('parentid = ',$update['ID'])
-                    ->where('people.userid = updates.userid','',FALSE)
+                    ->where('people.userid = updates.userid','',false)
                     ->order_by("parentid","desc")
                     ->order_by("date","desc")
                     ->limit(3);
@@ -97,11 +102,12 @@ class Update_model extends CI_Model {
      */
     public function view($updateid = 0) {
         // select the id, update, parentd of the updates and comments and ensure it's not been deleted
+        $updateid = $this->db->escape($updateid);
         $this->db->select('ID,update,parentid,firstname,lastname,people.userid')
                 ->from('updates,people')
                 ->where('deleted = ',0)
-                ->where('(ID = '.$updateid.' or parentid = '.$updateid.')','',FALSE)
-                ->where('people.userid = updates.userid','',FALSE)
+                ->where('(ID = '.$updateid.' or parentid = '.$updateid.')','',false)
+                ->where('people.userid = updates.userid','',false)
                 ->order_by("ID");
         // get the array of results
         $updates = $this->db->get()->result_array();
@@ -131,12 +137,10 @@ class Update_model extends CI_Model {
 
             if($this->db->affected_rows()) {
                 // get the ID of last update
-                $this->db->select_max('ID')
-                        ->from('updates')
-                        ->where('userid',$this->session->userdata['userid']);
-                $update = $this->db->get()->row_array();
+                $up_id = $this->db->insert_id();
+
                 // return the ID
-                return $update['ID'];
+                return $up_id;
             }
         }
         else {
@@ -146,7 +150,7 @@ class Update_model extends CI_Model {
     }
 
     /**
-     * The method for insterting an update into the db
+     * The method for creating a comment for an update
      * @param <int> $updateid the id of the update that the comment is written for
      * @par$update = am <string> $text the comment to post
      * @return <bool> return success or fail
@@ -166,13 +170,13 @@ class Update_model extends CI_Model {
             // return the effect (will return 0 (false) if insert failed)
             if($this->db->affected_rows()) {
                 // get the ID of last comment
-                $this->db->select_max('ID')
-                        ->from('updates')
-                        ->where('userid',$this->session->userdata['userid'])
-                        ->where('parentid',$updateid);
-                $comment = $this->db->get()->row_array();
+                $com_id = $this->db->insert_id();
+
+                // update to increase the number of comments that the update has
+                $this->db->query('update updates set count = (count + 1) where id = '.$this->db->escape($updateid));
+                
                 // return the ID
-                return $comment['ID'];
+                return $com_id;
             }
         }
         else {
@@ -202,7 +206,7 @@ class Update_model extends CI_Model {
 
             // set the data if the logged in userid is in the update/comments userid or ownersid values
             $this->db->where('ID = ', $id)
-                    ->where('(userid = '.$this->session->userdata['userid'].' or ownersid = '.$this->session->userdata['userid'].')',NULL,false)
+                    ->where('(userid = '.$this->session->userdata['userid'].' or ownersid = '.$this->session->userdata['userid'].')',null,false)
                     ->update('updates',$data);
 
             // if that did not work, and it's a comment that is being deleted (only go through this part if comment, not update, is being deleted)
@@ -211,7 +215,7 @@ class Update_model extends CI_Model {
                 $this->db->select('userid,ownersid')
                         ->from('updates')
                         ->where('ID = ',$update['parentid'])
-                        ->where('(userid = '.$this->session->userdata['userid'].' or ownersid = '.$this->session->userdata['userid'].')',NULL,false);
+                        ->where('(userid = '.$this->session->userdata['userid'].' or ownersid = '.$this->session->userdata['userid'].')',null,false);
                 $up_parent = $this->db->get();
 
                 // if the row is found then delete the comment
@@ -219,6 +223,11 @@ class Update_model extends CI_Model {
                     $this->db->where('ID = ', $id)
                             ->update('updates',$data);
                 }
+            }
+
+            // if a comment was deleted, reduce the number of comments for the update
+            if($this->db->affected_rows() && $update['parentid'] > 0) {
+                $this->db->query('update updates set count = (count - 1) where id = '.$this->db->escape($update['parentid']));
             }
 
             // create an array indicating whether it was a comment/update and whether the process was successful

@@ -3,7 +3,7 @@
 /**
  * This class was made by Moses Mutuku
  *
- * This is a controller class for managing updates. The following methods are in the class
+ * This is a library for managing updates. The following methods are in the class
  *
  * 1. View All Updates
  *      This method is for viewing all updates
@@ -38,14 +38,15 @@ class update {
      **/
     protected $ci;
 
-
-
-
     public $data = array();
 
     private $site_notifications = array();
 
+    // limit to the number of updates to be viewed. This is the limit for browser
+    private $up_count = 20;
 
+    // set the prefix for the views. used when the browser is mobile. the views have an m- prefix. for browsers, there is no prefix
+    private $view_prefix = '';
 
     /**
      * __construct
@@ -62,36 +63,40 @@ class update {
         $this->ci->load->config('notifications');
         $this->site_notifications = $this->ci->config->item('site_notifications');
 
-
         // Load the relation model for checking connection and follow status.
         $this->ci->load->model('relation_model');
 
         $this->data = $this->ci->redux_auth->get_browser('updates');
+
+        if($this->ci->agent->is_mobile()) {
+            $this->up_count = 10;
+            $this->view_prefix = 'm-';
+        }
     }
 
     /**
      * Method for displaying all the relevant updates when a user views thier profile page
      */
-    public function all() {
+    public function all($page = 0) {
+        // index from which to start the query
+        $start = $page * $this->up_count;
+
         // get all the updates of the logged in user from the model
-        $result['updates'] = $this->ci->update_model->all($this->ci->session->userdata['userid']);
+        $result['updates'] = $this->ci->update_model->all($this->ci->session->userdata['userid'], $this->up_count, $start);
 
         // set the error message in case the user has no updates
         $result['error_message'] = 'You have not made any update yet. Type your update above.';
 
         // load the view for creating the form for posting updates and save the result in the $form variable
-        $form = $this->ci->load->view('updates/form','',true);
+        $form = $this->ci->load->view('updates/'.$this->view_prefix.'form','',true);
 
-        // load the view for displaying the updates and comments and save the result in updates $variable
-        $updates = $this->ci->load->view('updates/view',$result,true);
+        // load the view for displaying the updates and comments and save the result in $updates variable
+        $updates = $this->ci->load->view('updates/'.$this->view_prefix.'view',$result,true);
 
         // put the form and updates as the page contents
         $this->data['content'] = $form.$updates;
 
         return $this->data;
-
-        // load the page template with the content data.
-        // $this->ci->load->view('template',$this->data);
 
     }
 
@@ -275,7 +280,7 @@ class update {
                 $content_type = ($result['type'])?'Comment':'Update';
                 // get if process was successful
                 $delete = $result['success'];
-                // set the error message to be displayed based on success
+                // set the message to be displayed based on success or failure
                 if($delete) {
                     $message = array(
                             'msg' => 'The '.$content_type.' was deleted successfully'
@@ -304,24 +309,28 @@ class update {
      * Method for displaying the selected user's updates
      * @param <int> $userid the userid of the user to display the updates
      */
-    public function selected($userid = 0) {
+    public function selected($userid = 0, $page = 0) {
         // check if the user is registered and active
         if($this->ci->update_model->user_status($userid)) {
 
             // put the userid in the data array
             $data['userid'] = $userid;
 
+            // index from  which to start the query
+            $start = $page * $this->up_count;
+
             // get all the updates for the selected user from the model
-            $result['updates'] = $this->ci->update_model->all($userid);
+            $result['updates'] = $this->ci->update_model->all($userid, $this->up_count, $start);
+            $result['profile'] = $this->ci->redux_auth->get_userdata($userid);
 
             // load the view for creating the form for posting updates and save the result in the $form variable
-            $form = $this->ci->load->view('updates/form',$data,true);
+            $form = $this->ci->load->view('updates/'.$this->view_prefix.'form',$data,true);
 
             // set the error message in case the user has no updates
             $result['error_message'] = 'There are no updates to view from this user.';
 
             // load the view for displaying the updates and comments and save the result in updates $variable
-            $updates = $this->ci->load->view('updates/view',$result,true);
+            $updates = $this->ci->load->view('updates/'.$this->view_prefix.'view',$result,true);
 
             // put the form and updates as the page contents
             $this->data['content'] = $form.$updates;
@@ -352,12 +361,13 @@ class update {
 
             // Load the update and it's comments from the model
             $result['updates'] = $this->ci->update_model->view($updateid);
+            $result['view_update'] = true;
 
             // set the error message in case the update is not found
             $result['error_message'] = 'The update was not found';
 
             // load the view for displaying the update and comments and save the result in updates $variable
-            $updates = $this->ci->load->view('updates/view',$result,true);
+            $updates = $this->ci->load->view('updates/'.$this->view_prefix.'view',$result,true);
 
             // put the update as the page contents
             $this->data['content'] = $updates;
@@ -392,17 +402,14 @@ class update {
         else { // if through html post
             // check success and wrap message in required class of paragraph tag
             if($success) {
-                $response = '<p class="success">'.$message.'</p>';
+                $response = '<p class="success">'.$message['msg'].'</p>';
             }
             else {
-                $response = '<p class="error">'.$message.'</p>';
+                $response = '<p class="error">'.$message['msg'].'</p>';
             }
             // flash the message
-            $this->ci->session->set_flashdata('message', $message);
-            // load the required function
-            // $this->all();
-
-            redirect('user/profile');
+            $this->ci->session->set_flashdata('message', $response);
+            
         }
     }
 
