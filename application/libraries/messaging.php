@@ -42,6 +42,8 @@ class messaging {
     public  $receivers = array();
 
     private $site_notifications = array();
+    
+    private $is_mobile = false;
 
     // limit to the number of messages to be viewed. This is the limit for browser
     private $msg_count = 20;
@@ -68,11 +70,11 @@ class messaging {
 
         // Load the relation model for checking connection and follow status.
         $this->ci->load->model('relation_model');
-        $this->data = $this->ci->redux_auth->get_browser('messages');
 
         if($this->ci->agent->is_mobile()) {
             $this->msg_count = 10;
             $this->view_prefix = 'm-';
+            $this->is_mobile = true;
         }
 
     }
@@ -88,19 +90,23 @@ class messaging {
         $result['messages'] = $this->ci->messaging_model->get($this->msg_count, $start);
 
         // set the error message in case the user has no messages
-        $result['error_message'] = 'You have not sent or received any updates yet';
-
-        $form = '';
-        if(!count($result['messages'])) {
-            // load the view for creating the form for posting messages and save the result in the $form variable
-            $form = $this->ci->load->view('messages/'.$this->view_prefix.'form','',true);
+        if($page==0) {
+            $result['error_message'] = 'You have not sent or received any messages yet';
+        }
+        else {
+            $result['error_message'] = 'There are no more messages to view';
         }
 
         // load the view for displaying the messages and comments and save the result in messages $variable
         $messages = $this->ci->load->view('messages/'.$this->view_prefix.'view_all',$result,true);
+        
+        if(!$this->is_mobile) {
+            $data['content'] = $messages;
+            $messages = $this->ci->load->view('messages/message_container',$data,true);
+        }
 
         // put the form and messages as the page contents
-        $this->data['content'] = $form.$messages;
+        $this->data['content'] = $messages;
 
         return $this->data;
 
@@ -133,7 +139,13 @@ class messaging {
         }
 
         // put the update as the page contents
-        $this->data['content'] = $messages.$form;
+        if(!$this->is_mobile) {
+            $data['content'] = $messages.$form;
+            $this->data['content'] = $this->ci->load->view('messages/message_container',$data,true);
+        }
+        else {
+            $this->data['content'] = $messages.$form;
+        }
 
         // load the page template with the content data.
         // $this->load->view('template',$this->data);
@@ -148,7 +160,13 @@ class messaging {
         $form = $this->ci->load->view('messages/'.$this->view_prefix.'form','',true);
 
         // put the form and messages as the page contents
-        $this->data['content'] = $form;
+        if(!$this->is_mobile) {
+            $data['content'] = $form;
+            $this->data['content'] = $this->ci->load->view('messages/message_container',$data,true);
+        }
+        else {
+            $this->data['content'] = $form;
+        }
 
         // load the page template with the content data.
         // $this->load->view('template',$this->data);
@@ -177,7 +195,7 @@ class messaging {
             if($msg_id) {
                 // set the success message
                 $send = true;
-                $message = 'Your Message has been sent successfully.';
+                $message = '<p class="success">Your Message has been sent successfully.</p>';
 
                 // if the message was sent from mobile, unset the receiver array
                 $this->ci->session->unset_userdata('receiver_details');
@@ -186,10 +204,7 @@ class messaging {
                 $this->ci->notifications->set_notification($this->site_notifications['message'],$msg_id,$this->receivers);
             }
             else {
-
-                $comma = implode(",", $this->receivers);
-                // else set the failure message
-                $message = $comma.'Failure: The Message was not sent.';
+                $message = '<p class="success">Failure: The Message was not sent.</p>';
             }
         }
 
@@ -388,10 +403,10 @@ class messaging {
         else { // if through html post
             // check success and wrap message in required class of paragraph tag
             if($success) {
-                $response = '<p class="success">'.$message.'</p>';
+                $response = $message;
             }
             else {
-                $response = '<p class="error">'.$message.'</p>';
+                $response = $message;
             }
             // flash the message
             $this->ci->session->set_flashdata('message', $response);

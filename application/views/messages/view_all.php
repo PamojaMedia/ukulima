@@ -1,28 +1,49 @@
-<h1>Messages</h1>
+<?php
 
-<div id="all_messages">
+if(count($messages) > 0) { ?>
+
+<div class="message-border">
 
 <?php
 
-if(count($messages) > 0) {
+    //echo form_open('user/delete_message/'); ?>
 
-foreach($messages as $message) {
-
-?>
-
-    <div id="list_messages">
-        <div id="message_excerpt">
-            <?php echo anchor('user/view/'.$message['userid'],'<b>'.$message['firstname'].' '.$message['lastname'].'</b><br>'); ?>
-            <?php echo $message['subject'].'<br>'; ?>
-            <?php echo (strlen($message['content']>200))?substr($message[''],200).' ...':$message['content'].'<br>'; ?>
-            <?php echo anchor('user/view_message/'.$message['ID'],'view').' | '.anchor('user/delete_message/'.$message['msgid'],'delete').' <br><br>'; ?>
+        <div id="list-header">
+        <?php /*    <div class="action">
+                <input type="checkbox" id="select_all" />
+            </div>
+            <input type="submit" value="Delete" /> */ ?>
         </div>
-    </div>
 
+        <?php
+        foreach($messages as $message) {
+
+        ?>
+
+            <div class="message">
+                <div class="action">
+                <?php /*    <input type="checkbox" class="for_delete" name="for_delete[]" value="<?php $message['userid'] ?>" /> */ ?>
+                </div>
+                <div class="content">
+                    <?php echo anchor('user/view_message/'.$message['ID'],
+                            '<span>'.$message['firstname'].' '.$message['lastname'].
+                            ':&nbsp;&nbsp;<b>'.$message['subject'].'</b><br />'.
+                            ((strlen($message['content'])>80)?substr($message['content'],0,70).' ...':$message['content']).'</span>'
+                            );
+                    ?>
+                </div>
+            </div>
+
+        <?php
+
+        }
+
+        echo '<div id="list-footer"></div>';
+
+    //echo form_close();
+?>
+</div>
 <?php
-
-}
-
 }
 
 else {
@@ -32,5 +53,3 @@ else {
 }
 
 ?>
-
-</div>

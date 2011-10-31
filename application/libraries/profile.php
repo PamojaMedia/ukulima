@@ -47,15 +47,21 @@ class profile {
         $result['network'] = $this->ci->relation_model->user_network($userid);
 
         // set the error message in case the user has no messages
-        $result['error_message'] = 'You are not connected to or tracking anyone';
-
+        $result['error_message'] = 'No one on this network.';
+        
         if($userid != $this->ci->session->userdata['userid']) {
-            $result['profile'] = $this->ci->redux_auth->get_userdata($userid);
-            $result['userid'] = $userid;
+            $result['is_tracking'] = $this->ci->relation->check_track($userid);
+            $result['is_connected'] = $this->ci->relation->check_connection($userid);
+            $result['is_trackingback'] = $this->ci->relation->check_trackback($userid);
         }
-        else {
-            $result['userid'] = $this->ci->session->userdata['userid'];
-        }
+        
+        $result['userconnects'] = $this->ci->relation_model->user_connections($userid, $this->count, 0);
+        $result['usertrackback'] = $this->ci->relation_model->trackback($userid, $this->count, 0);
+        $result['usertracks'] = $this->ci->relation_model->tracks($userid, $this->count, 0);
+
+        // get the profile information
+        $result['profile'] = $this->ci->redux_auth->get_userdata($userid);
+        $result['userid'] = $userid;
 
         // load the view for displaying the user's network
         $network = $this->ci->load->view('profile/'.$this->view_prefix.'network',$result,true);
@@ -64,10 +70,9 @@ class profile {
 
         return $this->data;
 
-
     }
 
-    public function network_search($network = '', $userid = 0, $page = 0) {
+    public function network_search($network = 'search', $userid = 0, $page = 0) {
         // index from which to start the query
         $start = $page * $this->count;
 
@@ -75,8 +80,8 @@ class profile {
         if($userid == 0) {
             $userid = $this->ci->session->userdata['userid'];
         }
-
-        if($network == 'tracks' || $network == 'trackback' || $network == 'connections') {
+        
+        if($network == 'tracks' || $network == 'trackback' || $network == 'connections' || $network == 'search') {
 
             if($this->ci->form_validation->run('network_search') == false) {
                 $this->data['content'] = 'Invalid search terms';
@@ -89,40 +94,24 @@ class profile {
                 // perform the search
                 $result[$network] = $this->ci->relation_model->network_search($search, $network, $userid, $this->count, $start);
                 $result['page'] = $page + 1;
-                
+
                 // set the error message in case the user has no messages
                 $result['error_message'] = 'No users were found';
-                if($page > 0) {
-                    $result['error_message'] = 'You\'ve already seen Everyone! BUMMER!!!';
-                }
-
-                if($userid != $this->ci->session->userdata['userid']) {
-                    $result['profile'] = $this->ci->redux_auth->get_userdata($userid);
-                    $data['userid'] = $result['userid'] = $userid;
-                }
-                else {
-                    $data['userid'] = $result['userid'] = $this->ci->session->userdata['userid'];
-                }
-
-                $data['search_query'] = $search;
-                $data['search_for'] = $network;
-                // load the view for creating the form for searching for follows
-                $form = $this->ci->load->view('profile/'.$this->view_prefix.'form',$data,true);
 
                 // load the view for displaying the users being followed
-                $search_results = $this->ci->load->view('profile/'.$this->view_prefix.$network,$result,true);
+                $search_results = $this->ci->load->view('profile/'.$this->view_prefix.$network,$result,true);                
 
                 // put the form and messages as the page contents
-                $this->data['content'] = $form.$search_results;
+                $this->data['content'] = $search_results;
 
             }
-
         }
         else {
             $this->data['content'] = 'The search could not be performed!';
         }
-
+        
         return $this->data;
+        
     }
 
     public function network_suggest($page = 0) {
@@ -163,6 +152,7 @@ class profile {
         
         // get the people that are being tracked
         $result['tracks'] = $this->ci->relation_model->tracks($userid, $this->count, $start);
+
         $result['page'] = $page + 1;
         
         if($userid != $this->ci->session->userdata['userid']) {
@@ -177,7 +167,7 @@ class profile {
             $result['error_message'] = 'You are not tracking anyone at the moment';
         }
         if($page > 0) {
-            $result['error_message'] = 'You\'ve already seen Everyone! BUMMER!!!';
+            $result['error_message'] = 'You\'ve already seen Everyone!!!';
         }
 
         $form = '';
@@ -220,7 +210,7 @@ class profile {
             $result['error_message'] = 'You are not being tracked at the moment';
         }
         if($page > 0) {
-            $result['error_message'] = 'You\'ve already seen Everyone! BUMMER!!!';
+            $result['error_message'] = 'You\'ve already seen Everyone!!!';
         }
 
         $form = '';
@@ -264,7 +254,7 @@ class profile {
             $result['error_message'] = 'You are not connected to anyone at the moment';
         }
         if($page > 0) {
-            $result['error_message'] = 'You\'ve already seen Everyone! BUMMER!!!';
+            $result['error_message'] = 'You\'ve already seen Everyone!!!';
         }
 
         $form = '';

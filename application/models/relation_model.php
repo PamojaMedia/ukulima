@@ -113,9 +113,9 @@ class Relation_model extends CI_Model {
 
     }
 
-    public function network_search($query = '', $network = '', $userid = 0, $count = 20,  $start = 0) {
+    public function network_search($query = '', $network = 'search', $userid = 0, $count = 20,  $start = 0) {
 
-        if($userid > 0 && $query != '' && ($network == 'tracks' || $network == 'trackback' || $network == 'connections')) {
+        if($userid > 0 && $query != '') {
 
             if($network == 'tracks') {
                 $this->db->select('follow.userid_2 as userid,username,firstname,lastname,track_back')
@@ -141,8 +141,14 @@ class Relation_model extends CI_Model {
                 $this->db->select('userid,username,firstname,lastname')
                     ->from('people')
                     ->where('(firstname like "%'.$query.'%" or lastname like "%'.$query.'%" )','',false)
-                    ->where('( userid in (select if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$this->db->escape($userid).' or userid_2 = '.$this->db->escape($userid).') and connectstatus = 1)
+                    ->where('( userid in (select if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$this->db->escape($userid).' or userid_2 = '.$this->db->escape($userid).') and connectstatus = 1))
                                ','',false)
+                    ->limit($count,$start);
+            }
+            elseif($network == 'search') {
+                $this->db->select('userid,username,firstname,lastname')
+                    ->from('people')
+                    ->where('(firstname like "%'.$query.'%" or lastname like "%'.$query.'%" )','',false)
                     ->limit($count,$start);
             }
 
@@ -166,7 +172,7 @@ class Relation_model extends CI_Model {
             $this->db->select('userid,username,firstname,lastname')
                     ->from('people')
                     ->where('userid not in (select userid_2 from follow where userid_1 = '.$this->db->escape($userid).' and followstatus = 1 )')
-                    ->where('userid not in (select if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$this->db->escape($userid).' or userid_2 = '.$this->db->escape($userid).') and connectstatus < 2)
+                    ->where('userid not in (select if(userid_1!='.$this->db->escape($userid).',userid_1,userid_2) as userid from connect where (userid_1 = '.$this->db->escape($userid).' or userid_2 = '.$this->db->escape($userid).') and connectstatus < 2)
                                ','',false)
                     ->where('userid !=',$userid)
                     ->limit($count,$start);
@@ -243,7 +249,7 @@ class Relation_model extends CI_Model {
         $this->db->select('people.userid, firstname, lastname, username')
             ->from('people')
             ->where('userid not in (SELECT if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus < 2)','',false)
-            ->where('userid !=', $userid)
+            ->where('userid !=', $this->session->userdata['userid'])
             ->where('userstatus',0)
             ->where('activation_code','')
             ->limit(5)
@@ -341,7 +347,7 @@ class Relation_model extends CI_Model {
             $this->db->select('*')
                    ->where('userid_1',$userid)
                    ->where('userid_2',$trackid)
-                   ->where('followstatus',0)
+                   ->where('followstatus',2)
                    ->limit(1);
 
             $query_user_refollow = $this->db->get($track_table);
@@ -350,7 +356,7 @@ class Relation_model extends CI_Model {
             {
                 $qur = $query_user_refollow->row();
                 $data = array('followstatus' => 1);
-                $this->db->update($follow_table, $data, array('userid_1' => $userid,'userid_2' => $followid));
+                $this->db->update($track_table, $data, array('userid_1' => $userid,'userid_2' => $trackid));
 
                 //refollow
                 return $qur->ID;
@@ -395,6 +401,43 @@ class Relation_model extends CI_Model {
             }
         }
     }
+    
+    public function untrack_user($userid = 0, $untrackid=0) {
+        if ($untrackid === 0 || $userid === 0 || $untrackid == $userid) {
+            return false;
+        }
+        
+        $this->db->where('userid_1',$userid)
+                ->where('userid_2',$untrackid)
+                ->update('follow',array('followstatus' => 2));
+        
+        return $this->db->affected_rows();
+        
+    }
+    
+    public function disconnect_users($userid = 0, $disconnectid=0) {
+        if ($disconnectid === 0 || $userid === 0 || $disconnectid == $userid) {
+            return false;
+        }
+        
+        $result = $this->db->select('ID')
+        	    ->from('connect')
+                    ->where('(userid_1 = ' . $userid . ' and userid_2 = ' . $disconnectid . ' )', NULL, false)
+                    ->or_where('(userid_2 = ' . $userid . ' and userid_1 = ' . $disconnectid . ' )', NULL, false)
+                    ->where('connectstatus',1)
+                    ->get();
+        if($result->num_rows()) {
+            $id = $result->row_array();
+            $this->db->where('ID',$id['ID'])
+                ->update('connect',array('connectstatus' => 2));
+            return $this->db->affected_rows();
+        }
+        else {
+            return false;
+        }                
+        
+    }
+    
 
     /**
      * Method to connect to a user. First check if the user you are connecting sent a request to connect

@@ -7,6 +7,6 @@
 	</head>
 	<body>
 		<h1>New Password</h1>
-		<p>You (<?php echo $identity; ?>) have validated your account, your new password is : <?php echo $new_password; ?></p>
+		<p>You have validated your account, your new password is : <?php echo $new_password; ?></p>
 	</body>
 </html>

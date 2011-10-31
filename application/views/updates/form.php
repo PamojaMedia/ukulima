@@ -1,4 +1,4 @@
-<h1 class="share_update">Share an update</h1>
+<h2 class="user_action">Share an update</h2>
 
 <?php echo $this->session->flashdata('message'); ?>
 
@@ -23,7 +23,7 @@
           'id' => 'update',
           'cols' => '80',
           'rows' => '4',
-		  'class' =>'share_textarea'
+          'class' =>'main'
     );
 
     echo '<p>'.form_textarea( $data ).'</p>'; ?>
@@ -31,5 +31,3 @@
 <?php echo '<p>'.form_submit('submit','Update', 'class="button" id="submit" ').'</p>'; ?>
 
 <?php echo form_close(''); ?>
-<hr class="hr-line">
-<div class="splices"> </div>

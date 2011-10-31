@@ -68,7 +68,7 @@ class relation
         public function suggest_connect()
         {
             $data = $this->ci->relation_model->user_suggest_connect();
-
+            
             return $data;
         }
 
@@ -98,7 +98,7 @@ class relation
 
        
 
-        public function track($trackid)
+        public function track($trackid, $ajax = false)
         {
             // load notifictation model
              $this->ci->load->model('notification_model','notifications');
@@ -116,6 +116,50 @@ class relation
             return $notify;
 
 
+         
+        }
+        
+        /**
+         * Function to untrack a user that the logged in user is tracking
+         * @param int $disconnectid id of the user to untrack
+         * @return boolean 
+         */
+        public function disconnect($disconnectid, $ajax = false)
+        {
+            $userid = $this->ci->session->userdata('userid');
+            
+            if($disconnectid > 0 && $disconnectid != $userid) {
+                
+                // retrieve the ID of the follow event            
+                $success = $this->ci->relation_model->disconnect_users($userid,$disconnectid);
+
+                return $success;
+
+            }
+            
+            return false;
+         
+        }
+        
+        /**
+         * Function to untrack a user that the logged in user is tracking
+         * @param int $untrackid id of the user to untrack
+         * @return boolean 
+         */
+        public function untrack($untrackid, $ajax = false)
+        {
+            $userid = $this->ci->session->userdata('userid');
+            
+            if($untrackid > 0 && $untrackid != $userid) {
+                
+                // retrieve the ID of the follow event            
+                $success = $this->ci->relation_model->untrack_user($userid,$untrackid);
+
+                return $success;
+
+            }
+            
+            return false;
          
         }
 
@@ -137,7 +181,7 @@ class relation
          *  Method to do a connect
          *  @param $connectid the id of the user the logged in user intends to connect to
          */
-        public function connect($connectid)
+        public function connect($connectid, $ajax = false)
         {
             // load notification model
              $this->ci->load->model('notification_model','notifications');

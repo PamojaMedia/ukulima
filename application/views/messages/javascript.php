@@ -30,10 +30,8 @@ k(document).ready(function(){
                             text: response['msg']
                         });
                         if(response['success']) {
-                           /* k('#message_div'+index).append('<div class="message">'+k('#message').val()+'</div>');
-                            k('#message').val("");*/
+                           k('#messages-middle').html(response['msg']);
                         }
-                        k('#send').removeAttr('disabled');
                 },
                 error: function(data,msg) {
                     k.gritter.add({

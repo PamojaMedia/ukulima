@@ -66,8 +66,6 @@ class update {
         // Load the relation model for checking connection and follow status.
         $this->ci->load->model('relation_model');
 
-        $this->data = $this->ci->redux_auth->get_browser('updates');
-
         if($this->ci->agent->is_mobile()) {
             $this->up_count = 10;
             $this->view_prefix = 'm-';
@@ -85,7 +83,13 @@ class update {
         $result['updates'] = $this->ci->update_model->all($this->ci->session->userdata['userid'], $this->up_count, $start);
 
         // set the error message in case the user has no updates
-        $result['error_message'] = 'You have not made any update yet. Type your update above.';
+        if($page==0) {
+            $result['error_message'] = 'You have not made any update yet. Type your update above.';
+        }
+        else {
+            $result['error_message'] = 'There are no more updates to view.';
+        }
+        $result['page'] = $page + 1;
 
         // load the view for creating the form for posting updates and save the result in the $form variable
         $form = $this->ci->load->view('updates/'.$this->view_prefix.'form','',true);
@@ -135,7 +139,7 @@ class update {
                 // if the user can comment
                 if($can_comment) {
                     // pass the data to the model function to create the update
-                    $commentid = $this->ci->update_model->comment($this->ci->input->post('number'), $this->ci->input->post('comment'));
+                    $commentid = $this->ci->update_model->comment($this->ci->input->post('number'), auto_link($this->ci->input->post('comment')));
 
                     // depending on success of creation, set the message to be displayed
                     if($commentid) {
@@ -144,12 +148,18 @@ class update {
                         $this->ci->notifications->set_notification($this->site_notifications['comment'],$commentid,$contentownerid);
 
                         $create = true;
-                        $message = array (
-                                'id' => $commentid,
-                                'user' => anchor('user/view/'.$this->ci->session->userdata['userid'],
-                                        '<b>'.$this->ci->session->userdata['firstname'].' '.$this->ci->session->userdata['lastname'].'</b> '),
-                                'del_url' => anchor('user/update_delete/'.$commentid, 'Delete', array('class' => 'delete', 'id' => 'deletecm'.$commentid)),
-                                'msg' => 'Your comment has been posted successfully.'
+
+                        $data['comment']['firstname'] = $this->ci->session->userdata['firstname'];
+                        $data['comment']['lastname'] = $this->ci->session->userdata['lastname'];
+                        $data['comment']['userid'] = $this->ci->session->userdata['userid'];
+                        $data['comment']['ID'] = $commentid;
+                        $data['comment']['update'] = auto_link($this->ci->input->post('comment'));
+                    
+                        $content = $this->ci->load->view('updates/create-comment',$data,true);
+
+                        $message = array(
+                            'content' => $content,
+                            'msg' => 'Your comment has been posted successfully.'
                         );
                     }
                     else {
@@ -213,7 +223,7 @@ class update {
             }
             else { // if validation is successful
                 // pass the data to the model function to create the update
-                $updateid = $this->ci->update_model->create($this->ci->input->post('update'),$id);
+                $updateid = $this->ci->update_model->create(auto_link($this->ci->input->post('update')),$id);
                 // successfully created
                 if($updateid) {
                     if($id != $this->ci->session->userdata['userid']) {
@@ -224,11 +234,16 @@ class update {
                     $create = true;
                     // set the success message
 
+                    $data['update']['firstname'] = $this->ci->session->userdata['firstname'];
+                    $data['update']['lastname'] = $this->ci->session->userdata['lastname'];
+                    $data['update']['userid'] = $this->ci->session->userdata['userid'];
+                    $data['update']['ID'] = $updateid;
+                    $data['update']['update'] = auto_link($this->ci->input->post('update'));
+
+                    $content = $this->ci->load->view('updates/create-update',$data,true);
+
                     $message = array(
-                            'id' => $updateid,
-                            'user' => anchor('user/view/'.$this->ci->session->userdata['userid'],
-                                        '<b>'.$this->ci->session->userdata['firstname'].' '.$this->ci->session->userdata['lastname'].'</b> '),
-                            'del_url' => anchor('user/update_delete/'.$updateid, 'Delete', array('class' => 'delete', 'id' => 'deleteup'.$updateid)),
+                            'content' => $content,
                             'msg' => 'Your update has been posted successfully.'
                     );
                 }
@@ -313,6 +328,10 @@ class update {
         // check if the user is registered and active
         if($this->ci->update_model->user_status($userid)) {
 
+            // load the notification model and set any notice about the update as viewed.
+            $this->ci->load->model('notification_model','notifications');
+            $this->ci->notifications->noted($userid,$this->site_notifications['follow']);
+            
             // put the userid in the data array
             $data['userid'] = $userid;
 
@@ -322,12 +341,19 @@ class update {
             // get all the updates for the selected user from the model
             $result['updates'] = $this->ci->update_model->all($userid, $this->up_count, $start);
             $result['profile'] = $this->ci->redux_auth->get_userdata($userid);
+            $result['page'] = $page + 1;
 
             // load the view for creating the form for posting updates and save the result in the $form variable
             $form = $this->ci->load->view('updates/'.$this->view_prefix.'form',$data,true);
 
             // set the error message in case the user has no updates
-            $result['error_message'] = 'There are no updates to view from this user.';
+            if($page==0) {
+                $result['error_message'] = 'There are no updates to view from this user.';
+            }
+            else {
+                $result['error_message'] = 'There are no more updates from this user.';
+            }
+            
 
             // load the view for displaying the updates and comments and save the result in updates $variable
             $updates = $this->ci->load->view('updates/'.$this->view_prefix.'view',$result,true);
@@ -347,7 +373,7 @@ class update {
     }
 
     /**
-     * Method for displaying the a particular update and it's comments
+     * Method for displaying a particular update and it's comments
      * @param <int> $updateid variable to indicate which update to display
      */
     public function view($updateid = 0, $userid = 0)
@@ -358,7 +384,7 @@ class update {
             // load the notification model and set any notice about the update as viewed.
             $this->ci->load->model('notification_model','notifications');
             $this->ci->notifications->noted($updateid,$this->site_notifications['update']);
-
+            
             // Load the update and it's comments from the model
             $result['updates'] = $this->ci->update_model->view($updateid);
             $result['view_update'] = true;

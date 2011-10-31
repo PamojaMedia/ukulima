@@ -142,7 +142,7 @@ foreach($users_connections as $user)
      foreach($s_connect as $sc)
      {
          ?>
-<?php echo $sc['username'].' -  '.$sc['firstname'].'  '.$sc['lastname'] ;?>
+<?php echo $sc['username'].' -  '.$sc['firstname'].'  '.$sc['lastname'].' <a href="'. site_url("user/connect_user/".$sc['userid']).'"> Connect</a>'  ;?>
 
     <?php }
 

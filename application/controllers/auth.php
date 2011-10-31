@@ -49,30 +49,6 @@ class Auth extends CI_Controller {
     }
 
     /**
-     * activate
-     * doesn't currently work
-     *
-     * @return void
-     * @author Mathew
-     * */
-    function activate($username = '', $code = '') {
-
-        if ($username != '' && $code != '') {
-            $activate = $this->redux_auth->activate($username, $code);
-
-            if ($activate) {
-                $this->session->set_flashdata('message', '<p class="success">Your Account is now activated, please login.</p>');
-                redirect('auth/activate');
-            } else {
-                $this->session->set_flashdata('message', '<p class="error">Your account is already activated or doesn\'t need activating.</p>');
-                redirect('auth/activate');
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * settings
      *
      * this is for user to add bio data and change it if they see fit
@@ -98,6 +74,20 @@ class Auth extends CI_Controller {
      * @author Mathew
      * */
     function register() {
+        $this->output->enable_profiler(FALSE);
+        $sections = array(
+            'config'  => TRUE,
+                'benchmarks'  => TRUE,
+                'controller_info'  => TRUE,
+                'get'  => TRUE,
+                'http_headers'  => TRUE,
+                'memory_usage'  => TRUE,
+                'post'  => TRUE,
+                'uri_string'  => TRUE,
+                'queries' => TRUE
+        );
+	
+	$this->output->set_profiler_sections($sections);
 
         //concatenate the country code and the number
         if (isset($_POST['phonenumber']) && isset($_POST['code'])) {
@@ -107,8 +97,16 @@ class Auth extends CI_Controller {
         if ($this->form_validation->run($this->view_prefix . 'register') == false) {
             $this->form_validation->set_error_delimiters('<p class="error">', '</p>');
             $this->data['content'] = $this->load->view('auth_view/' . $this->view_prefix . 'register', null, true);
+            $this->data['scripts'] = '<script src="http://code.jquery.com/jquery-latest.js"></script><script src="' . base_url() . 'javascript/jquery.validate.js" type="text/javascript"></script><script type="text/javascript">$(document).ready(function(){ $("#validate_form").validate();});</script>';
+            $this->data['styles'] = "<style type='text/css'>label.error { float: left; color: red; padding-left: .5em; vertical-align: top; }</style>";
             $this->load->view($this->tpl, $this->data);
-        } else {
+        }
+        elseif($this->is_mobile && $this->input->post('confirm') == 'email' && $this->input->post('email') == '' ) {
+            $this->session->set_flashdata('message', '<p class="success">Please enter your email address to send you the activation email.</p>');
+            $this->data['content'] = $this->load->view('auth_view/' . $this->view_prefix . 'register', null, true);
+            redirect('auth/register');
+        }
+        else {
             $username = $this->input->post('username');
             $firstname = $this->input->post('firstname');
             $lastname = $this->input->post('lastname');
@@ -131,15 +129,15 @@ class Auth extends CI_Controller {
                         if ($this->agent->is_mobile('j2me', 'midp')) {
                             echo 'registered';
                         } else {
-                            $this->session->set_flashdata('message', '<p class="success">One final step. Please check your SMS to activate your account.</p>');
+                            $this->session->set_flashdata('message', '<p class="success">One final step. An activation code will be sent to you by SMS. Use the code to activate your account.</p>');
                             redirect('auth/mobile_activate');
                         }
-                    } elseif ($confirm == 'mail') {
+                    } elseif ($confirm == 'email') {
                         if ($this->agent->is_mobile('j2me', 'midp')) {
                             echo 'registered';
                         } else {
                             $this->session->set_flashdata('message', '<p class="success">One final step. Please check your email to activate your account.</p>');
-                            redirect('auth/login');
+                            redirect('auth/mobile_activate');
                         }
                     }
                 } else {
@@ -465,23 +463,27 @@ class Auth extends CI_Controller {
      * */
     function change_password() {
 
+        $data['success_message'] = '';
         if ($this->form_validation->run('change_password') == false) {
             $this->form_validation->set_error_delimiters('<p class="error">', '</p>');
-            $this->data['content'] = $this->load->view('auth_view/change_password', null, true);
+            $this->data['content'] = $this->load->view('auth_view/change_password', $data, true);
             $this->load->view($this->tpl, $this->data);
         } else {
-            $old = $this->input->post('old');
-            $new = $this->input->post('new');
+            $old = $this->input->post('password');
+            $new = $this->input->post('password1');
 
             $identity = $this->session->userdata($this->config->item('identity'));
 
             $change = $this->redux_auth->change_password($identity, $old, $new);
 
             if ($change) {
-                $this->logout();
+                $data['success_message'] = "<p class='success'>Password Changed Successfully</p>";
             } else {
-                echo "Password Change Failed";
+                $data['success_message'] =  "<p class='error'>Password Change Failed</p>";
             }
+            
+            $this->data['content'] = $this->load->view('auth_view/change_password', $data, true);
+            $this->load->view($this->tpl, $this->data);
         }
     }
 
@@ -510,7 +512,7 @@ class Auth extends CI_Controller {
                     $this->session->set_flashdata('message', '<p class="success">An sms has been sent to your phone number.</p>');
                     redirect('auth/forgotten_password');
                 } else {
-                    $this->session->set_flashdata('message', '<p class="error">Could not send the sms, please enter your details again.</p>');
+                    $this->session->set_flashdata('message', '<p class="error">Could not send the sms, please enter your details again.</p>'.anchor('auth/forgotten_password','Click here to enter your details again'));
                     redirect('auth/forgotten_password');
                 }
             }
@@ -573,23 +575,21 @@ class Auth extends CI_Controller {
      * @return void
      * @author Comark
      */
-    public function activate_new_user($username, $password, $activate_code) {
+    public function activate_new_user($username, $activate_code) {
         $activate = $this->redux_auth->activate($username, $activate_code);
 
         if ($activate) {
-            $login = $this->redux_auth->login($username, $password);
+            //$login = $this->redux_auth->login($username, $password);
 
-            if ($login) {
-                $data['message'] = '<p class="success">Your account has been successfully activated.</p>';
-                //$this->session->set_flashdata('message', '<p class="success">Your account has been successfully activated.</p>');
-                $this->data['content'] = $this->load->view('auth_view/new_user_active', $data, true);
-                $this->load->view($this->tpl, $this->data);
-            } else {
+            //if ($login) {
+              //  redirect('user/profile');
+           // } else
+			//{
                 $data['message'] = '<p class="success">Your account has been successfully activated. But you will have to login to access your account</p>';
                 //$this->session->set_flashdata('message', '<p class="success">Your account has been successfully activated. But you will have to login to access your account</p>');
                 $this->data['content'] = $this->load->view('auth_view/new_user_active', $data, true);
                 $this->load->view($this->tpl, $this->data);
-            }
+            //}
         } else {
             $this->session->set_flashdata('message', '<p class="success">There was a problem activating your account. Please contact the Help Desk</p>');
             redirect('auth/new_user_active');
@@ -643,15 +643,10 @@ class Auth extends CI_Controller {
      * @author Comark
      */
     public function deactivate() {
-        if ($this->redux_auth->logged_in()) {
-            $data['username'] = $this->session->userdata('username');
-            $data['userid'] = $this->session->userdata('userid');
-            $this->data['content'] = $this->load->view('auth_view/deactivate', $data, true);
-            $this->load->view($this->tpl, $this->data);
-        } else {
-
-            redirect('auth/login');
-        }
+        $data['username'] = $this->session->userdata('username');
+        $data['userid'] = $this->session->userdata('userid');
+        $this->data['content'] = $this->load->view('auth_view/deactivate', $data, true);
+        $this->load->view($this->tpl, $this->data);
     }
 
     /**
@@ -661,20 +656,20 @@ class Auth extends CI_Controller {
      * @author Comark
      */
     public function deactivate_link($username, $userid) {
-        if ($this->redux_auth->logged_in()) {
-            $identity = $this->session->userdata('username');
+            
+        if($this->session->userdata('username') == $username && $this->session->userdata('userid') == $userid ) {
 
-            $deactivate = $this->redux_auth->deactivate_link($identity, $userid, $username);
+            $deactivate = $this->redux_auth->deactivate_link($this->session->userdata('username'), $userid, $username);
 
             if ($deactivate) {
-
-
-                // $this->session->sess_destroy();
                 redirect('auth/reactivate');
             } else {
                 redirect('user/home');
             }
         }
+
+        redirect('auth/reactivate');
+            
     }
 
     /**
@@ -718,34 +713,37 @@ class Auth extends CI_Controller {
      * @author Comark
      */
     public function reactivate_link($username, $userid) {
-        if ($this->redux_auth->logged_in()) {
-            $identity = $this->session->userdata('email');
+        if ($this->session->userdata('username') == $username && $this->session->userdata('userid') == $userid) {
 
-            $reactivate = $this->redux_auth->reactivate_link($identity, $userid, $username);
+            $reactivate = $this->redux_auth->reactivate_link($this->session->userdata('username'), $userid, $username);
 
             if ($reactivate) {
-
                 redirect('user/home');
             } else {
                 redirect('auth/login');
             }
-        }
+        }        
     }
 
     function _remap($method, $params = array()) {
-
+        
         // check if the user is logged in
         if ($this->redux_auth->logged_in()) {
 
             //check if the user is deactivated
             if ($this->session->userdata('deactive_but_logged_in')) {
-                // if the user is trying to reactivate then unset the deactive_but_logged_in session then run the reactivate call
-                if (method_exists($this, 'reactivate_link')) {
-                    $this->session->unset_userdata('deactive_but_logged_in');
+                $allowed_methods = array (
+                    'reactivate_link', 'logout'
+                );
+                $allow_access = false;
+                foreach($allowed_methods as $allowed) {
+                    if($allowed == $method) {
+                        $allow_access = true;
+                    }
+                }
+                if($allow_access) {
                     return call_user_func_array(array($this, $method), $params);
                 }
-
-                // if the user is deactivated and logged in and tries to do something send to the reactivate area.
                 else {
                     $this->reactivate();
                 }
@@ -753,53 +751,25 @@ class Auth extends CI_Controller {
 
             // the user is active and logged in
             else {
-                // we do not want them to see the login area or registration area again
-                $other_methods = array('0' => 'login', '1' => 'register');
-                $p = false;
-
-                foreach ($other_methods as $k => $val) {
-                    if ($method == $val) {
-                        $p = true;
-                        break;
-                    }
-                }
-
-                // if its not either login or registration run the function call
-                if (!$p) {
-                    return call_user_func_array(array($this, $method), $params);
-                }
-
-                //otherwise return them to the status page
-                else {
-                    $this->index();
-                }
+                return call_user_func_array(array($this, $method), $params);
             }
         }
 
         // Here the user is not logged in and should not be able to see various sections until they login
         else {
-            $new_methods = array('0' => 'change_password', '1' => 'deactivate',
-                '2' => 'deactivate_link', '3' => 'logout',
-                '4' => 'home', '5' => 'status', '6' => 'index', '7' => 'profile'
-            ); // array of methods that will lead logged out users to the login screen
-
-            $j = false;
-
-            foreach ($new_methods as $i => $value) {
-
-                if ($method == $value) {
-                    $j = true;
-                    break;
+            $allowed_methods = array (
+                'register', 'login', 'logout', 'activate_new_user', 'mobile_activate', 'forgotten_password', 'forgotten_password_complete'
+            );
+            $allow_access = false;
+            foreach($allowed_methods as $allowed) {
+                if($allowed == $method) {
+                    $allow_access = true;
                 }
             }
-
-            // if the function is not among the ones in the above array it will run it as usual
-            if (!$j) {
-                if (method_exists($this, $method)) {
-
-                    return call_user_func_array(array($this, $method), $params);
-                }
-            } else {
+            if($allow_access) {
+                return call_user_func_array(array($this, $method), $params);
+            }
+            else {
                 $this->login();
             }
         }

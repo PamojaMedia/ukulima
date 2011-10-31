@@ -13,21 +13,36 @@
             <div id="logo">
             </div>
             <div class="nav">
-                <span><?php echo anchor('user/home', 'Home'); ?> |</span>
-                <span> <?php echo anchor('user/messages', 'Messages'); ?> |</span>
+                <span><?php echo anchor('user/home', 'Home'); ?></span>
                 <span> <?php echo anchor('user/profile', 'Profile'); ?></span>
+                <span><?php echo anchor('user/updates', 'Updates'); ?></span>
+                <span> <?php echo anchor('user/messages', 'Messages'); ?></span>
             </div>
         </div>
         <?php echo $content; ?>
         <div id="foot">
             <div class="nav">
-                <span><?php echo anchor('user/home', 'Home'); ?> | </span>
-                <span><?php echo anchor('user/messages', 'Messages'); ?> | </span>
-                <span><?php echo anchor('user/profile', 'Profile'); ?> | </span>
+                <span><?php echo anchor('user/home', 'Home'); ?></span>
+                <span> <?php echo anchor('user/profile', 'Profile'); ?></span>
+                <span><?php echo anchor('user/updates', 'Updates'); ?></span>
+                <span> <?php echo anchor('user/messages', 'Messages'); ?></span>
                 <span><?php echo anchor('auth/logout', 'Logout'); ?></span>
             </div>
             <div id="search">
             </div>
         </div>
+		<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19908404-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
     </body>
 </html>

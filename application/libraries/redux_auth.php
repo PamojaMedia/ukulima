@@ -98,18 +98,14 @@ class redux_auth {
         $forgotten_password = $this->ci->redux_auth_model->forgotten_password($email);
 
         if ($forgotten_password) {
-            // Get user information.
-            $profile = $this->ci->redux_auth_model->profile($email);
-
-            $data = array('identity' => $profile->{$this->ci->config->item('identity')},
-                'forgotten_password_code' => $this->ci->redux_auth_model->forgotten_password_code);
+            $data = array('forgotten_password_code' => $this->ci->redux_auth_model->forgotten_password_code);
 
             $message = $this->ci->load->view($this->ci->config->item('email_templates') . 'forgotten_password', $data, true);
 
             $this->ci->email->clear();
             $this->ci->email->set_newline("\r\n");
-            $this->ci->email->from('', '');
-            $this->ci->email->to($profile->email);
+            $this->ci->email->from('admin@ukulima.net', 'Admin');
+            $this->ci->email->to($email);
             $this->ci->email->subject('Email Verification (Forgotten Password)');
             $this->ci->email->message($message);
             return $this->ci->email->send();
@@ -120,10 +116,11 @@ class redux_auth {
 
 
     public function mobile_forgotten_password($phonenumber) {
-        $forgotten_password = $this->ci->redux_auth_model->mobile_forgotten_password($phonenumber);
+        $code = $this->ci->redux_auth_model->mobile_forgotten_password($phonenumber);
 
-        if ($forgotten_password) {
-            return $this->send_sms($phonenumber, 'forgotpassword');
+        if ($code) {
+            $message = urlencode('You have requested for your password to be reset. Visit '.base_url().'auth/forgotten_password.html and enter your username and this code: '.$code);
+            return $this->send_sms($phonenumber, $message);
         } else {
             return false;
         }
@@ -136,20 +133,19 @@ class redux_auth {
      * @author Mathew
      * */
     public function forgotten_password_complete($code) {
-        $identity = $this->ci->config->item('identity');
-        $profile = $this->ci->redux_auth_model->profile($code);
-        $forgotten_password_complete = $this->ci->redux_auth_model->forgotten_password_complete($code);
+        $userid = $this->ci->redux_auth_model->forgotten_password_complete($code);
 
-        if ($forgotten_password_complete) {
-            $data = array('identity' => $profile->{$identity},
-                'new_password' => $this->ci->redux_auth_model->new_password);
+        if ($userid) {
+            $data = array('new_password' => $this->ci->redux_auth_model->new_password);
 
             $message = $this->ci->load->view($this->ci->config->item('email_templates') . 'new_password', $data, true);
+            
+            $email = $this->ci->redux_auth_model->get_email_by_userid($userid);
 
             $this->ci->email->clear();
             $this->ci->email->set_newline("\r\n");
-            $this->ci->email->from('', '');
-            $this->ci->email->to($profile->email);
+            $this->ci->email->from('admin@ukulima.net', 'Admin');
+            $this->ci->email->to($email);
             $this->ci->email->subject('New Password');
             $this->ci->email->message($message);
             return $this->ci->email->send();
@@ -174,13 +170,14 @@ class redux_auth {
         $email_activation = $this->ci->config->item('email_activation');
         $email_folder = $this->ci->config->item('email_templates');
 
-        $register = $this->ci->redux_auth_model->register($username, $firstname, $lastname, $password, $email, $phonenumber);
+        $register = $this->ci->redux_auth_model->register($username, $password, $email);
         if($confirm=='phone') {
             $this->ci->redux_auth_model->deactivate($username);
-            return $this->send_sms($phonenumber, 'activation');
+            $code = $this->ci->redux_auth_model->activation_code;
+            $message = urlencode('You have successfully registered on ukulima.net. Visit '.base_url().'auth/mobile_activate.html and use the code below to activate your account. Code: '.$code);
+            return $this->send_sms($phonenumber, $message);
         }
         elseif($email_activation || $confirm=='email') {
-            $register = $this->ci->redux_auth_model->register($username, $firstname, $lastname, $password, $email, $phonenumber);
 
             if (!$register) {
                 return false;
@@ -197,9 +194,9 @@ class redux_auth {
             $site_url = site_url();
 
             $data = array('username' => 'Username: ' . $username . '<br />',
-                'password' => 'Password: ' . $password . '<br />',
+                'password' => 'Password: Your Selected Password <br />',
                 'email' => 'Email address: ' . $email . '<br />',
-                'activation' => 'Activation link: ' . $site_url . 'auth/activate_new_user/' . $username . '/' . $password . '/' . $activation_code . '<br />',
+                'activation' => 'Activation link: ' . $site_url . 'auth/activate_new_user/' . $username . '/' . $activation_code . '<br />',
                 'cancel' => 'If you wish to cancel the registration: ' . $site_url . 'auth/cancel_link/' . $username . '/' . $password
             );
 
@@ -207,7 +204,7 @@ class redux_auth {
 
             $this->ci->email->clear();
             $this->ci->email->set_newline("\r\n");
-            $this->ci->email->from('Admin', 'admin@ukulima.net');
+            $this->ci->email->from('', 'Admin');
             $this->ci->email->to($email);
             $this->ci->email->subject('Email Activation (Registration)');
             $this->ci->email->message($message);
@@ -247,9 +244,6 @@ class redux_auth {
      * @author Mathew
      * */
     public function logout() {
-        // $identity = $this->ci->config->item('identity');
-        //$identity = $this->ci->session->userdata('');
-        $this->ci->session->unset_userdata('userid');
         $this->ci->session->sess_destroy();
     }
 
@@ -342,23 +336,37 @@ class redux_auth {
      * Loading the js for users accessing through a site
      * @return array of strings to output to the browser
      */
-    public function get_browser($method) {
+    public function get_browser($method = '') {
         if ($this->ci->agent->is_browser() && !$this->ci->agent->is_mobile()) {
             $this->data['libraries'] =
-                    // jquery library
-                    '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>' .
-                    // gritter library for showing notifications
-                    '<script src="' . base_url() . 'javascript/jquery.gritter.min.js" type="text/javascript"></script>' .
-                    '<script type="text/javascript" charset="ISO-8859-1" src="' . base_url() . 'javascript/jquery.tokeninput.min.js" type="text/javascript"></script>';
+                // jquery library
+                '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>' .
+                // gritter library for showing notifications
+                '<script src="' . base_url() . 'javascript/jquery.gritter.min.js" type="text/javascript"></script>';
 
+            if($method=='messages') {
 
-            $this->data['styles'] = link_tag('assets/css/token-input.css');
+                $this->data['libraries'] .= '<script type="text/javascript" charset="ISO-8859-1" src="' . base_url() . 'javascript/jquery.tokeninput.min.js" type="text/javascript"></script>';
 
-            // load the js script for ajaxifying the updating and commenting process
-            $data['url'] = site_url('user/message_receiver/1');
-            $this->data['scripts'] = $this->ci->load->view($method . '/javascript', $data, true);
+            }
 
-            //$this->data['relationscript'] =$this->ci->load->view('relation/javascript','',true);
+            if($method != '') {
+                if($method=='messages') {
+
+                    $data['url'] = site_url('user/message_receiver/1');
+
+                }
+                else {
+
+                    $data = array();
+
+                }
+
+                // load the js script for ajaxifying stuff
+                $this->data['scripts'] = $this->ci->load->view($method . '/javascript', $data, true);
+
+            }
+
         }
 
         return $this->data;
@@ -368,24 +376,11 @@ class redux_auth {
         return $this->ci->redux_auth_model->profile($userid);
     }
 
-    public function send_sms($phonenumber = '', $type = 'activation') {
-         $num_length = strlen($phonenumber);
-        if($phonenumber!='' && $num_length>=10 && $num_length<=12) {
-            if($type=='activation') {
-                $code = $this->ci->redux_auth_model->activation_code;
-            }
-            elseif($type=='forgotpassword') {
-                $code = $this->ci->redux_auth_model->forgotten_password_code;
-            }
+    public function send_sms($phonenumber = '', $message = '') {
+        $num_length = strlen($phonenumber);
+        if($phonenumber!='' && $num_length>=10 && $num_length<=12 && $message != '') {
             $source = 'ukulima.net';
-            $url = "http://smpp3.routesms.com:8080/bulksms/bulksms?".
-                "username=wk-test&".
-                "password=test123&".
-                "type=0&".
-                "dlr=0&".
-                "destination=$phonenumber&".
-                "source=$source&".
-                "message=$code";
+            $url = "URL to your SMS provider";
             $ch = curl_init();    // initialize curl handle
             curl_setopt($ch, CURLOPT_URL,$url); // set url
             curl_setopt($ch, CURLOPT_FAILONERROR, 1);

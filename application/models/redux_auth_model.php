@@ -373,7 +373,10 @@ class Redux_auth_model extends CI_Model {
 
             return ($this->db->affected_rows() == 1) ? true : false;
         } else {
-            return false;
+            
+            $this->forgotten_password_code = $code;
+            
+            return true;
         }
     }
 
@@ -389,35 +392,23 @@ class Redux_auth_model extends CI_Model {
         if ($phonenumber === false) {
             return false;
         }
+        
+        $key = rand(1001,9999);
 
-        $query = $this->db->select('forgotten_password_code')
-                        ->where('phonenum', $phonenumber)
-                        ->limit(1)
-                        ->get($users_table);
+        $this->forgotten_password_code = $key;
 
-        $result = $query->row();
+        $data = array('forgotten_password_code' => $key);
 
-        $code = $result->forgotten_password_code;
+        $this->db->update($users_table, $data, array('phonenum' => $phonenumber));
 
-        if (empty($code)) {
-            $key = rand(1001,9999);
-
-            $this->forgotten_password_code = $key;
-
-            $data = array('forgotten_password_code' => $key);
-
-            $this->db->update($users_table, $data, array('phonenum' => $phonenumber));
-
-            return ($this->db->affected_rows() == 1) ? true : false;
-        } else {
-            return false;
-        }
+        return ($this->db->affected_rows() == 1) ? $key : false;
+       
     }
 
     /**
      * undocumented function
      *
-     * @return void
+     * @return userid of the user or false
      * @author Mathew
      * */
     public function forgotten_password_complete($code = false) {
@@ -442,11 +433,11 @@ class Redux_auth_model extends CI_Model {
             $this->new_password = $salt;
 
             $data = array('password' => $password,
-                'forgotten_password_code' => '0');
+                'forgotten_password_code' => '');
 
             $this->db->update($users_table, $data, array('forgotten_password_code' => $code));
 
-            return true;
+            return $result->userid;
         }
 
         return false;
@@ -536,12 +527,12 @@ class Redux_auth_model extends CI_Model {
      * @return void
      * @author Mathew
      * */
-    public function register($username = false, $firstname= false, $lastname= false, $password = false, $email = false, $phonenumber=false) {
+    public function register($username = false, $password = false, $email = false) {
         $users_table = $this->tables['people'];
         // $groups_table       = $this->tables['groups'];
 
 
-        if ($username === false || $firstname === false || $lastname === false || $password === false || $email === false || $phonenumber === false) {
+        if ($username === false || $password === false || $email === false ) {
             return false;
         }
 
@@ -557,11 +548,10 @@ class Redux_auth_model extends CI_Model {
 
         // Users table.
         $data = array('username' => $username,
-            'firstname' => $firstname,
-            'lastname' => $lastname,
+            
             'password' => $password,
             'email' => $email,
-            'phonenum' => $phonenumber,
+            
             'ip_address' => $ip_address);
 
         $this->db->insert($users_table, $data);
@@ -653,8 +643,26 @@ class Redux_auth_model extends CI_Model {
         $result = $query->row();
 
         if ($query->num_rows() == 1) {
-            $email = $result->email;
-            return $email;
+            return $result->email;
+        } else {
+            return false;
+        }
+    }
+    
+    public function get_email_by_userid($userid = false) {
+        $users_table = $this->tables['people'];
+        if ($userid === false) {
+            return false;
+        }
+        $query = $this->db->select('email')
+                        ->where('userid', $userid)
+                        ->limit(1)
+                        ->get($users_table);
+
+        $result = $query->row();
+
+        if ($query->num_rows() == 1) {
+            return $result->email;
         } else {
             return false;
         }
@@ -670,7 +678,9 @@ class Redux_auth_model extends CI_Model {
     public function deactivate_link($identity=false, $userid=false, $username=false) {
         $users_table = $this->tables['people'];
 
-        if ($identity === false || $userid === false || $username === false) {
+        if ($identity === false || $userid === false || $username === false
+                || $this->session->userdata('username') != $username 
+                || $this->session->userdata('userid') != $userid ) {
 
             return false;
         }
@@ -707,7 +717,9 @@ class Redux_auth_model extends CI_Model {
     public function reactivate_link($identity=false, $userid=false, $username=false) {
         $users_table = $this->tables['people'];
 
-        if ($identity === false || $userid === false || $username === false) {
+        if ($identity === false || $userid === false || $username === false 
+                || $this->session->userdata('username') != $username 
+                || $this->session->userdata('userid') != $userid ) {
 
             return false;
         }
@@ -722,14 +734,13 @@ class Redux_auth_model extends CI_Model {
 
         if ($query->num_rows() == 1) {
             if ($result->userstatus == 1) {
-
-                return false;
-            } else {
-
                 $data = array('userstatus' => 0);
                 $this->db->update($users_table, $data, array('userid' => $userid));
                 $this->session->set_userdata('deactive_but_logged_in', FALSE);
                 return true;
+            } 
+            else {
+                return false;
             }
         }
     }

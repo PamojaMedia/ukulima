@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.10.1
+-- version 3.4.5
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 24, 2011 at 08:27 AM
+-- Generation Time: Oct 31, 2011 at 03:39 AM
 -- Server version: 5.0.92
 -- PHP Version: 5.2.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -25,6 +26,10 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `activity_interest`
 --
 
+CREATE DATABASE  `mobiproj_rfmobileproject` ;
+
+USE `mobiproj_rfmobileproject`;
+
 CREATE TABLE IF NOT EXISTS `activity_interest` (
   `ID` int(11) NOT NULL auto_increment,
   `userid` int(11) NOT NULL,
@@ -34,11 +39,6 @@ CREATE TABLE IF NOT EXISTS `activity_interest` (
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `activity_interest`
---
-
 
 -- --------------------------------------------------------
 
@@ -51,11 +51,6 @@ CREATE TABLE IF NOT EXISTS `basis` (
   `basis_name` text NOT NULL,
   PRIMARY KEY  (`basis_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `basis`
---
-
 
 -- --------------------------------------------------------
 
@@ -70,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `cause_for_notification` (
   UNIQUE KEY `cause` (`cause`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `connect`
@@ -81,9 +77,9 @@ CREATE TABLE IF NOT EXISTS `connect` (
   `userid_2` int(11) NOT NULL,
   `connectstatus` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `follow`
@@ -95,9 +91,9 @@ CREATE TABLE IF NOT EXISTS `follow` (
   `userid_2` int(11) NOT NULL,
   `followstatus` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=149 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=64 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `groups`
@@ -108,8 +104,9 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `name` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `messages`
@@ -123,8 +120,9 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `parentid` int(11) NOT NULL default '0',
   `date` int(12) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `message_receivers`
@@ -137,9 +135,9 @@ CREATE TABLE IF NOT EXISTS `message_receivers` (
   `count` int(11) NOT NULL default '0',
   `deleted` tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=149 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `notifications`
@@ -152,9 +150,9 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `userid` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=361 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=121 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `people`
@@ -180,9 +178,28 @@ CREATE TABLE IF NOT EXISTS `people` (
   `forgotten_password_code` varchar(40) NOT NULL,
   PRIMARY KEY  (`userid`),
   UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=60 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=102 ;
 
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `questions`
+--
+
+CREATE TABLE IF NOT EXISTS `questions` (
+  `ID` int(11) NOT NULL auto_increment,
+  `question` varchar(400) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `tagsid` int(11) NOT NULL,
+  `ownersid` int(11) NOT NULL,
+  `parentid` int(11) NOT NULL default '0',
+  `date` int(12) NOT NULL default '0',
+  `count` int(11) NOT NULL default '0',
+  `deleted` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `recommend`
@@ -199,36 +216,7 @@ CREATE TABLE IF NOT EXISTS `recommend` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-
---
--- Table structure for table `reports`
---
-
-CREATE TABLE IF NOT EXISTS `reports` (
-  `ID` int(11) NOT NULL auto_increment,
-  `causeid` smallint(2) NOT NULL,
-  `contentid` int(11) NOT NULL,
-  `basis` text NOT NULL,
-  `status` tinyint(1) NOT NULL default '0',
-  `userid` int(11) NOT NULL,
-  `date` int(12) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-
-
---
--- Table structure for table `report_areas`
---
-
-CREATE TABLE IF NOT EXISTS `report_areas` (
-  `ID` int(11) NOT NULL auto_increment,
-  `contentarea` smallint(2) NOT NULL,
-  `enabled` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `search`
@@ -242,6 +230,7 @@ CREATE TABLE IF NOT EXISTS `search` (
   PRIMARY KEY  (`searchid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sessions`
@@ -256,7 +245,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   PRIMARY KEY  (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `tags`
@@ -268,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `tags` (
   PRIMARY KEY  (`ID`,`tagnameid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `tag_names`
@@ -280,6 +269,7 @@ CREATE TABLE IF NOT EXISTS `tag_names` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `updates`
@@ -296,9 +286,9 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `count` int(11) NOT NULL default '0',
   `deleted` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=263 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `user_content`
@@ -318,3 +308,6 @@ CREATE TABLE IF NOT EXISTS `user_content` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

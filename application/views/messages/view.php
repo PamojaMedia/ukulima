@@ -1,36 +1,35 @@
-<h1>Recent Messages</h1>
+<?php
 
-<div id="view_messages">
+if(is_array($messages)) {
+    
+    echo '<h2 class="user_action">'.$messages[0]['subject'].'</h2>';
+    
+    $class = 'gray';
 
-    <?php
+    foreach($messages as $message) {
 
-    if(is_array($messages)) {
+        echo '<div id="message_text'.$message['msgid'].'" class=" single-message '.$class.'">';
 
-        foreach($messages as $message) {
+        echo anchor('user/view/' . $message['userid'], '<b>' . $message['firstname'] . ' ' . $message['lastname'] . '</b> ');
+        
+        echo $message['content'];
 
-            echo '<div id="message_text'.$message['msgid'].'">';
+        echo anchor('user/delete_message/'.$message['msgid'], 'x', array('class' => 'delete', 'id' => $message['msgid']));
+        
+        
+        $class = ($class=='gray')?'white':'gray';
 
-            echo anchor('user/view/' . $message['userid'], '<b>' . $message['firstname'] . ' ' . $message['lastname'] . '</b> ') .$message['content'];
-
-            echo '<br> --------------------------------- ';
-
-            if($message['parentid']) {
-                echo anchor('user/delete_message/'.$message['msgid'], 'Delete', array('class' => 'delete', 'id' => $message['msgid']));
-            }
-
-            echo '<br></div>';
-
-        }
-
+        echo '<br></div>';
 
     }
 
-    else {
 
-        echo $error_message;
+}
 
-    }
+else {
 
-    ?>
+    echo $error_message;
 
-</div>
+}
+
+?>

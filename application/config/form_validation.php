@@ -22,11 +22,11 @@ $m_email = 'trim|valid_email|xss_clean';
 
 $username = 'trim|required|min_length[5]|max_length[12]|alpha_dash|xss_clean';
 
-$name = 'trim|required|alpha_numeric';
+$name = 'trim|alpha_numeric';
 
 $password = 'required';
 
-$phone_num = 'required|max_length[12]|min_length[10]|numeric';
+$phone_num = 'required|max_length[12]|min_length[9|numeric';
 
 $userid = 'required|numeric';
 
@@ -145,13 +145,22 @@ $update_config = array(
         'label' => 'Update',
         'rules' => $update
     );
+$question_config = array(
+        'field' => 'question',
+        'label' => 'Question',
+        'rules' => $update
+    );
 
 $comment_config = array(
         'field' => 'comment[]',
         'label' => 'Comment',
         'rules' => $update
     );
-
+$answer_config = array(
+        'field' => 'answer[]',
+        'label' => 'Answer',
+        'rules' => $update
+    );
 $number_config = array(
         'field' => 'number',
         'label' => 'Number',
@@ -220,7 +229,7 @@ $confirm_config = array(
     'field' => 'confirm',
     'label' => 'Confirmation',
     'rules' => $search
-);
+); 
 /**
  * Final section where now you name the validation and the fields to be validated
  */
@@ -230,13 +239,15 @@ $config = array (
         'activation' => array($activation_config),
         'm-activation' => array($username_config, $activation_config),
         'mobile-activate' => array($username_config,$password_config,$activation_config),
-        'register' => array($new_username_config,$new_firstname_config,$new_lastname_config,$new_phone_num_config,$new_email_config,$new_password_config,$new_password2_config),
+        'register' => array($new_username_config,$new_email_config,$new_password_config,$new_password2_config),
         'm-register' => array($new_username_config,$new_firstname_config,$new_lastname_config,$new_phone_num_config,$new_m_email_config,$new_password_config,$new_password2_config,$confirm_config),
         'change_password' => array($password_config, $new_password_config, $new_password2_config),
         'forgot_password' => array($email_config),
         'm-forgot_password' => array($phone_num_config),
         'create_update' => array($update_config),
+        'create_question' => array($question_config),
         'create_comment' => array($number_config,$comment_config),
+        'create_answer' => array($number_config,$answer_config),
         'delete_content' => array($number_config),
         'send_message' => array($receivers_config,$subject_config,$message_config),
         'reply_message' => array($message_config),

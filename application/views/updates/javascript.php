@@ -9,20 +9,13 @@ j(document).ready(function(){
 
         if(id=='submit') {
             var the_url = j('#form_submit').attr('action');
-            var form_data = {
-                    update: j('#update').val(),
-                    ajax: '1'
-            };
+            var form_data = j('#form_submit').serialize()+'&ajax=1';
         }
 
         else {
-            var index = id.substring(id.lastIndexOf('n') + 1 , id.length);
+            var index = parseInt(id.replace('button', ''));
             var the_url = "<?php echo site_url('user/comment/'); ?>";
-            var form_data = {
-                    comment: j('#comment'+index).val(),
-                    number: index,
-                    ajax: '1'
-            };
+            var form_data = j('#comment-form'+index).serialize()+'&ajax=1';
         }
 
         j.ajax({
@@ -42,29 +35,15 @@ j(document).ready(function(){
                         });
                         if(response['success']) {
                             if(id=='submit') {
-                                j('#rec_updates').prepend(
-                                        '<div class="update" id="update'+response['result']['id']+'">'+
-                                        response['result']['user']+
-                                        j('#update').val()+response['result']['del_url']+
-										'<div class="caret-area"><div class="caret"></div></div>'+
-										'<div class="comment-area">'+
-                                        '<div id="comment_div'+response['result']['id']+'"></div>'+
-                                        '<form method="post" action="'+the_url+'">'+
-                                        '<p class="comment_submit"><textarea id="comment'+response['result']['id']+'" name="comment" cols="50" rows="50"></textarea></p>'+
-                                        '<input type="hidden" name="number" value="'+response['result']['id']+'" />'+
-                                        '<p class="comment_submit"><input type="submit" class="button" name="button'+response['result']['id']+'" value="Comment" id="button'+response['result']['id']+'" /></p>'+
-                                        '</form>'+
-                                        '</div>'+
-										'</div>'
+                                j('#rec-content').prepend(
+                                    response['result']['content']
                                 );
                                 j('#update').val("");
                             }
                             else {
-                                j('#comment_div'+index).append('<div class="comment" id="comment'+response['result']['id']+'">'
-                                    +response['result']['user']+
-                                    j('#comment'+index).val()+'</div>'
-                                    +response['result']['del_url']
-                                    );
+                                j('#comment_div'+index).append(
+                                    response['result']['content']
+                                );
                                 j('#comment'+index).val("");
                             }
                         }

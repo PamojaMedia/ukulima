@@ -40,13 +40,17 @@ class Notification_model extends CI_Model {
             $notifications = $this->config->item('site_notifications');
             $msgs = array();
             $updates = array();
+            $questions = array();
             $comments = array();
-
+            $answers = array();
             $follow = array();
             $connect = array();
             foreach($result as $note) {
                 if($notifications[$note['causeid']] == 'update') {
                     $updates[] = $note['contentid'];
+                }
+                elseif($notifications[$note['causeid']] == 'question') {
+                    $questions[] = $note['contentid'];
                 }
                 elseif($notifications[$note['causeid']] == 'message') {
                     $msgs[] = $note['contentid'];
@@ -54,10 +58,13 @@ class Notification_model extends CI_Model {
                 elseif($notifications[$note['causeid']] == 'comment') {
                     $comments[] = $note['contentid'];
                 }
-               elseif($notifications[$note['causeid']] == 'follow') {
+                elseif($notifications[$note['causeid']] == 'answer') {
+                    $answers[] = $note['contentid'];
+                }
+                elseif($notifications[$note['causeid']] == 'follow') {
                     $follow[] = $note['contentid'];
                 }
-                  elseif($notifications[$note['causeid']] == 'connect') {
+                elseif($notifications[$note['causeid']] == 'connect') {
                     $connect[] = $note['contentid'];
                 }
             }
@@ -72,6 +79,21 @@ class Notification_model extends CI_Model {
                 if(count($result)) {
                     foreach($result as $note) {
                         $note['type'] = $notifications['update'];
+                        $user_notifications[] = $note;
+                    }
+                }
+            }
+            
+         if(count($questions)) {
+                $this->db->select('firstname,lastname,people.userid,ID')
+                        ->from('people,questions')
+                        ->where_in('ID',$questions)
+                        ->where('people.userid = questions.userid')
+                        ->order_by('ID','desc');
+                $result = $this->db->get()->result_array();
+                if(count($result)) {
+                    foreach($result as $note) {
+                        $note['type'] = $notifications['question'];
                         $user_notifications[] = $note;
                     }
                 }
@@ -92,7 +114,21 @@ class Notification_model extends CI_Model {
                     }
                 }
             }
-
+               if(count($answers)) {
+                $this->db->distinct()
+                        ->select('firstname,lastname,people.userid,parentid as ID')
+                        ->from('people,questions')
+                        ->where_in('ID',$answers)
+                        ->where('people.userid = questions.userid')
+                        ->order_by('parentid');
+                $result = $this->db->get()->result_array();
+                if(count($result)) {
+                    foreach($result as $note) {
+                        $note['type'] = $notifications['answer'];
+                        $user_notifications[] = $note;
+                    }
+                }
+            }
             if(count($msgs)) {
                 $this->db->select('firstname,lastname,people.userid,ID,parentid')
                         ->from('people,messages')
@@ -129,13 +165,13 @@ class Notification_model extends CI_Model {
 
                  //retrieve the userid1 from which the contentid is the ID in follow table
                  $this->db->select('userid_1,firstname,lastname,people.userid')
-                         ->from('follow,people')
+                         ->from('connect,people')
                          ->where_in('ID',$connect)
                         ->where('userid_1 = people.userid');
                  $result = $this->db->get()->result_array();
                 if(count($result)) {
                     foreach($result as $note) {
-                        $note['type'] = $notifications['follow'];
+                        $note['type'] = $notifications['connect'];
                         $note['ID'] = $note['userid'];
                         $user_notifications[] = $note;
                     }
@@ -165,11 +201,21 @@ class Notification_model extends CI_Model {
 
             $notifications = $this->config->item('site_notifications');
 
-            if($notifications['update'] == $causeid) {
+            if($notifications['update'] == $causeid || $notifications['comment'] == $causeid) {
                 $this->db->select('notifications.ID')
                         ->from('notifications,updates')
-                        ->where('(updates.parentid = '.$contentid.' or updates.ID = '.$contentid.')','',false)
+                        ->where('(updates.parentid = '.$this->db->escape($contentid).' or updates.ID = '.$this->db->escape($contentid).')','',false)
                         ->where('notifications.contentid = updates.ID','',false)
+                        ->where('(notifications.causeid = '.$notifications['update'].' or notifications.causeid = '.$notifications['comment'].')')
+                        ->where('notifications.userid',$this->session->userdata['userid']);
+                $results = $this->db->get();
+            }
+            if($notifications['question'] == $causeid || $notifications['answer'] == $causeid) {
+                $this->db->select('notifications.ID')
+                        ->from('notifications,questions')
+                        ->where('(questions.parentid = '.$this->db->escape($contentid).' or questions.ID = '.$this->db->escape($contentid).')','',false)
+                        ->where('notifications.contentid = questions.ID','',false)
+                        ->where('(notifications.causeid = '.$notifications['question'].' or notifications.causeid = '.$notifications['answer'].')')
                         ->where('notifications.userid',$this->session->userdata['userid']);
                 $results = $this->db->get();
             }
@@ -177,28 +223,62 @@ class Notification_model extends CI_Model {
             if($notifications['message'] == $causeid) {
                 $this->db->select('notifications.ID')
                         ->from('notifications,messages')
-                        ->where('(messages.parentid = '.$contentid.' or messages.ID = '.$contentid.')','',false)
+                        ->where('(messages.parentid = '.$this->db->escape($contentid).' or messages.ID = '.$this->db->escape($contentid).')','',false)
                         ->where('notifications.contentid = messages.ID','',false)
+                        ->where('notifications.causeid',$causeid)
                         ->where('notifications.userid',$this->session->userdata['userid']);
                 $results = $this->db->get();
             }
 
+            if($notifications['connect'] == $causeid) {
+                // get the event id from the follow table
+                $this->db->select('connect.ID')
+                        ->from('connect')
+                        ->where('userid_1',$contentid)
+                        ->where('userid_2',$this->session->userdata['userid']);
+                $query = $this->db->get();
+                
+                if($query->num_rows()) {
+                    $note_row = $query->row_array();
+
+                    $note_id = $note_row['ID'];
+
+                    $this->db->select('notifications.ID')
+                            ->from('notifications')
+                            ->where('contentid',$note_id)
+                            ->where('causeid',$notifications['connect'])
+                            ->where('userid',$this->session->userdata['userid']);
+                    $results = $this->db->get();
+                    
+                }
+                else {
+                    return true;
+                }
+            }
+
             if($notifications['follow'] == $causeid) {
                 // get the event id from the follow table
-                $this->db->select('follow.ID,userid_1,userid_2,')
+                $this->db->select('follow.ID')
                         ->from('follow')
-                        ->where('userid_1',2)
+                        ->where('userid_1',$contentid)
                         ->where('userid_2',$this->session->userdata['userid']);
-                $fquery = $this->db->get();
-                $note_row = $fquery->row();
+                $query = $this->db->get();
+                if($query->num_rows()) {
+                    $note_row = $query->row_array();
 
-                $note_id = $note_row->ID;
+                    $note_id = $note_row['ID'];
 
-                $this->db->select('notifications.ID,notifications.contentid')
-                        ->from('notifications')
-                        ->where('contentid',$note_id);
-                $results = $this->db->get();
+                    $this->db->select('notifications.ID')
+                            ->from('notifications')
+                            ->where('contentid',$note_id)
+                            ->where('causeid',$notifications['follow'])
+                            ->where('userid',$this->session->userdata['userid']);
+                    $results = $this->db->get();
 
+                }
+                else {
+                    return true;
+                }
             }
 
             if($results->num_rows()) {
@@ -283,7 +363,55 @@ class Notification_model extends CI_Model {
                 }
 
             }
+         elseif($notifications['answer'] == $causeid) {
+                $this->db->distinct()
+                        ->select('userid,ownersid')
+                        ->from('questions')
+                        ->where('(id = (select parentid from questions where ID = '.$contentid.') or parentid = (select parentid from questions where ID = '.$contentid.') )')
+                        ->where('(userid != '.$this->session->userdata['userid'].' or ownersid > 0)')
+                        ->where('deleted',0);
+                $result = $this->db->get();
 
+                $values = '';
+
+                if($result->num_rows()) {
+
+                    $users = $result->result_array();
+                    $users = array_unique($this->array_values_recursive($users));
+
+                    foreach($users as $user) {
+                        $values .= '('.$causeid.','.$contentid.','.$user['userid'].'),';
+
+                    }
+                    $values = substr($values,0,-1);
+
+                    $this->db->query('INSERT INTO notifications (causeid, contentid,userid) VALUES '.$values);
+
+                    return $this->db->affected_rows();
+                }
+                else {
+
+                    if($userid == $this->session->userdata['userid']) {
+                        return true;
+                    }
+
+                    else {
+
+                        $data = array (
+                                'causeid' => $causeid,
+                                'contentid' => $contentid,
+                                'userid' => $userid
+                        );
+
+                        $this->db->insert('notifications',$data);
+
+                        return $this->db->affected_rows();
+
+                    }
+
+                }
+
+            }
             elseif($notifications['message'] == $causeid) {
 
                 $values = '';

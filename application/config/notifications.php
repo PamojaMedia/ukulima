@@ -26,6 +26,8 @@ $config['site_notifications'] = array(
         'report_comment'    => 8,
         'report_message'    => 9,
         'report_content'    => 10,
+        'question'    => 11,
+        'answer'    =>	12,
 
 //      index
         1   => 'update',
@@ -39,7 +41,9 @@ $config['site_notifications'] = array(
         7   =>  'report_update',
         8   =>  'report_comment',
         9   =>  'report_message',
-        10   =>  'report_content'
+        10   =>  'report_content',
+        11   => 'question',
+        12   => 'answer'
 
     );
 

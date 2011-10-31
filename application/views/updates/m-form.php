@@ -1,6 +1,6 @@
 <p class="share_update">Share an update</p>
 
-<?php $this->session->flashdata('message'); ?>
+<?php echo $this->session->flashdata('message'); ?>
 
 <?php echo validation_errors(); ?>
 

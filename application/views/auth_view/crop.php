@@ -20,6 +20,7 @@
      <input type="hidden" name="y2" id="y2" value="" />
      <input type="hidden" name="w" id="w" value="" />
      <input type="hidden" name="h" id="h" value="" />
+     <input type="hidden" name="ext" value="<?php echo $file_extension; ?>">
      <input type="hidden" name="path" value="<?php echo $success;?>">
      <input type="hidden" name="file_name" value="<?php echo $file_crop_name;?>">
      <!-- You will probably want to store the id or path to the image you are altering -->

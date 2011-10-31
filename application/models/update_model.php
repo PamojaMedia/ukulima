@@ -45,19 +45,19 @@ class Update_model extends CI_Model {
         $userid = $this->db->escape($userid);
         $start = $this->db->escape($start);
 
-        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid,updates.count')
+        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid,updates.count,connections.connectstatus')
                 ->from('updates,people')
+                ->join('(select if(userid_1!='.$userid.',userid_1,userid_2) as userid,connectstatus from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus = 1) as connections','connections.userid = updates.userid or connections.userid = updates.ownersid','left')
                 ->where('parentid = ',0)
                 ->where('deleted = ',0)
                 ->where('(updates.userid = '.$userid.' OR ownersid = '.$userid.
-                ' OR updates.userid IN (select userid_2 from connect where userid_1 = '.$userid.' and connectstatus = 1)'.
-                ' OR updates.userid IN (select userid_1 from connect where userid_2 = '.$userid.' and connectstatus = 1)'.
+                ' OR updates.userid IN (select if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus = 1)'.
                 ' OR updates.userid IN (select userid_2 from follow where userid_1 = '.$userid.' and followstatus = 1))')
                 ->where('people.userid = updates.userid','',false)
                 ->limit($count,$start)
                 ->order_by("date","desc");
         $updates = $this->db->get()->result_array();
-
+        
         // array to hold all updates and comments to be displayed
         $final_result = array();
 
@@ -103,8 +103,10 @@ class Update_model extends CI_Model {
     public function view($updateid = 0) {
         // select the id, update, parentd of the updates and comments and ensure it's not been deleted
         $updateid = $this->db->escape($updateid);
-        $this->db->select('ID,update,parentid,firstname,lastname,people.userid')
+        $userid = $this->db->escape($this->session->userdata['userid']);
+        $this->db->select('ID,update,parentid,firstname,lastname,people.userid,connections.connectstatus')
                 ->from('updates,people')
+                ->join('(select if(userid_1!='.$userid.',userid_1,userid_2) as userid,connectstatus from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus = 1) as connections','connections.userid = updates.userid or connections.userid = updates.ownersid','left')
                 ->where('deleted = ',0)
                 ->where('(ID = '.$updateid.' or parentid = '.$updateid.')','',false)
                 ->where('people.userid = updates.userid','',false)

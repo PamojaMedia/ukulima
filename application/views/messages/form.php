@@ -4,17 +4,11 @@
 
 <?php if(isset($msgid)) {
 
-        echo form_open('user/reply/'.$msgid,array('id' => 'form_submit'));
+        echo form_open('user/reply/'.$msgid,array('id' => 'form_submit', 'class' => 'message-reply'));
 
     }
 
     else { 
-        
-?>
-    
-        <h1>Create a New Message</h1>
-
-<?php
 
         echo form_open('user/create_message',array('id' => 'form_submit'));
 
@@ -25,7 +19,7 @@
               'id' => 'tokenize'
         );
 
-        echo form_input( $data ); ?>
+        echo '<p><label for="receiver">Send To:</label>'.form_input( $data ).'</p>'; ?>
 
 
 <?php
@@ -36,10 +30,11 @@
             'name' => 'subject',
             'id' => 'subject',
             'maxlength' => '100',
-            'size' => '50'
+            'size' => '50',
+            'class' => 'with-border'
         );
 
-        echo form_input( $data );
+        echo '<p><label for="receiver">Subject:</label>'.form_input( $data ).'</p>';
 
     }
 ?>
@@ -57,7 +52,7 @@
           'rows' => '3',
     );
 
-    echo form_textarea( $data ); ?>
+    echo '<p><label for="receiver">'.(isset($msgid)?'Reply':'Message').':</label>'.form_textarea( $data ).'</p>'; ?>
 
 <?php
 

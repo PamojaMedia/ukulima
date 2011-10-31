@@ -69,7 +69,11 @@ else {
                     echo $update['count'].' comments | '. anchor('user/view_update/'.$update['ID'],'View All') .' | ';
                 }
 
-                echo anchor('user/view_update/'.$update['ID'],'Comment');
+                if($up_userid == $this->session->userdata['userid'] ||
+                        $up_ownerid == $this->session->userdata['userid'] ||
+                        $update['connectstatus'] == 1) {
+                    echo anchor('user/view_update/'.$update['ID'],'Comment');
+                }
 
             } else {
 
@@ -87,35 +91,41 @@ else {
         }
         
         if(isset($view_update)) {
+            
+            if($update['userid'] == $this->session->userdata['userid'] ||
+                    (isset($update['rec_id']) && $update['rec_id'] == $this->session->userdata['userid'] ) ||
+                    $update['connectstatus'] == 1) {
+                
+                $textarea = array(
+                      'name' => 'comment',
+                      'cols' => '20',
+                      'rows' => '4',
+                );
 
-            $textarea = array(
-                  'name' => 'comment',
-                  'cols' => '20',
-                  'rows' => '4',
-            );
+                $button = array(
+                    'name' => 'button',
+                    'value' => 'Comment'
+                );
 
-            $button = array(
-                'name' => 'button',
-                'value' => 'Comment'
-            );
+                $form =
 
-            $form =
+                    '<div>'.
 
-                '<div>'.
+                        form_open('user/view_update/'.$updates[0]['ID']).
 
-                    form_open('user/view_update/'.$updates[0]['ID']).
+                            '<p class="comment_submit">'.form_textarea( $textarea ).'</p>'.
 
-                        '<p class="comment_submit">'.form_textarea( $textarea ).'</p>'.
+                            form_hidden("number", $updates[0]['ID'], false).
 
-                        form_hidden("number", $updates[0]['ID'], false).
+                            '<p class="comment_submit">'.form_submit($button).'</p>'.
 
-                        '<p class="comment_submit">'.form_submit($button).'</p>'.
+                        form_close().
 
-                    form_close().
+                    '</div>';
 
-                '</div>';
-
-            echo $form;
+                echo $form;
+                
+            }
             
         }
         echo '</div>';

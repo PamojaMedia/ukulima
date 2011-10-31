@@ -1,68 +1,48 @@
-<h1>Register</h1>
+<div id="out-form">
+    
+    <h1 class="login-title">Join Ukulima</h1>
 
-<?php echo $this->session->flashdata('message'); ?>
+    <?php echo $this->session->flashdata('message'); ?>
 
-<?php echo validation_errors(); ?>
+    <?php echo validation_errors(); ?>
 
-<?php echo form_open('auth/register'); ?>
+    <?php echo form_open('auth/register'); ?>
 
-<table>
-    <thead>
-        <tr>
-            <th colspan="2">Required Fields</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Username</td>
-            <td><?php echo form_input('username', set_value('username')); ?></td>
-        </tr>
+        <p class="required"> All the fields are required </p>
+        <p class="registerp">
+            <label>Username</label>
+            <?php
+            $data_username = array('name' => 'username', 'value' => set_value('username'), 'class' => 'login-input');
+            echo form_input($data_username); ?>
+        </p>
 
-        <tr>
-            <td>First Name</td>
-            <td><?php echo form_input('firstname', set_value('firstname')); ?></td>
-        </tr>
+        <p class="registerp">
+            <label>Email Address</label>
+            <?php
+            $data_email = array('name' => 'email', 'value' => set_value('email'), 'class' => 'login-input');
+            echo form_input($data_email); ?>
+        </p>
 
-         <tr>
-            <td>Last Name</td>
-            <td><?php echo form_input('lastname', set_value('lastname')); ?></td>
-        </tr>
+        <p class="registerp">
+            <label>Password</label>
+            <?php
+            $data_password1 = array('name' => 'password1', 'class' => 'login-input');
+            echo form_password($data_password1); ?>
+        </p>
 
-        <tr>
-            <td>Phone Number</td>
-            <td><?php echo form_input('phonenumber', set_value('phonenumber')); ?></td>
-        </tr>
-        
-        <tr>
-            <td>Email Address</td>
-            <td><?php echo form_input('email', set_value('email')); ?></td>
-        </tr>
-        <tr>
-            <td>Password</td>
-            <td><?php echo form_password('password1'); ?></td>
-        </tr>
+        <p class="registerp">
+            <label>Confirm Password</label>
+            <?php
+            $data_password2 = array('name' => 'password2', 'class' => 'login-input');
+            echo form_password($data_password2); ?>
+        </p>
 
-        <tr>
-            <td>Confirm Password</td>
-            <td><?php echo form_password('password2'); ?></td>
-        </tr>
-    </tbody>
-</table>
+        <p class="registerp">
+            <?php
+            $data_submitbtn = array('name' => 'submit', 'value' => 'Sign Up', 'class' => 'login-submit');
+            echo form_submit($data_submitbtn); ?>
+        </p>
 
-<table>
-    <thead>
-        <tr>
-            
-        </tr>
-    </thead>
-    <tbody>
-       
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="2"><?php echo form_submit('submit', 'Register'); ?></td>
-        </tr>
-    </tfoot>
-</table>
+    <?php echo form_close(''); ?>
 
-<?php echo form_close(''); ?>
+</div>
