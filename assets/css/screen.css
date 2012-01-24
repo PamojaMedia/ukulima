@@ -22,7 +22,7 @@ blockquote, q {quotes:"" "";}
 a img {border:none;}
 
 /* typography.css */
-body {font-size:75%;color:#222;background:#fff;font-family:Verdana,, Arial, Helvetica, sans-serif;}
+body {font-size:75%;color:#222;background:#fff;font-family:Verdana, Arial, Helvetica, sans-serif;}
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
 h1 {font-size:3em;line-height:1;margin-bottom:0.5em;}
 h2 {font-size:2em;margin-bottom:0.75em;}
@@ -234,7 +234,9 @@ hr.space {background:#fff;color:#fff;}
 .clear {clear:both;}
 
 /* forms.css */
-label {font-weight:bold;}
+label {font-weight:bold;margin-right: 5px;}
+p.registerp label {font-weight:bold;width:150px;margin-right: 5px;float:left;}
+p.registerp label small {font-weight:bold;font-size: 10px;}
 fieldset {padding:1.4em;margin:0 0 1.5em 0;border:1px solid #ccc;}
 legend {font-weight:bold;font-size:1.2em;}
 input.text, input.title, textarea, select {margin:0.5em 0;border:1px solid #bbb;}

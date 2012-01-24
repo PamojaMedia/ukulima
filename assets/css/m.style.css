@@ -85,9 +85,16 @@ div.comment-area {
 }
 
 a.delete {
-    color: #990000;
+    color: #000;
+    float: right;
+    background-color: #900;
+    padding: 1px;
 }
 
 textarea {
     width: 95%;
+}
+span.update-time-mobile{
+    color: #999;
+    margin: 5px;
 }

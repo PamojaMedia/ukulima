@@ -16,6 +16,7 @@
                 <span><?php echo anchor('user/home', 'Home'); ?></span>
                 <span> <?php echo anchor('user/profile', 'Profile'); ?></span>
                 <span><?php echo anchor('user/updates', 'Updates'); ?></span>
+                <span><?php echo anchor('user/suggest', 'People'); ?></span>
                 <span> <?php echo anchor('user/messages', 'Messages'); ?></span>
             </div>
         </div>

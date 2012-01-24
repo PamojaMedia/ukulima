@@ -197,7 +197,7 @@
             }
         }
         else {
-            echo 'You are not connected to anyone.';
+            echo 'You are not connected to anyone.<br> Find friends to connect with '.anchor('user/suggest', 'here');
         }
         ?>
     </div>
@@ -212,7 +212,7 @@
             }
         }
         else {
-            echo 'You are not tracking anyone.';
+            echo 'You are not tracking anyone.<br> Find interesting people to track '.anchor('user/suggest', 'here');
         }
         ?>
     </div>

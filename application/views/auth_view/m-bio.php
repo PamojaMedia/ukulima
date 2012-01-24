@@ -7,6 +7,32 @@
 
 <?php echo form_open('auth/bio'); ?>
 
+<p>First name: </p>
+<?php
+    $data = array(
+          'name' => 'firstname',
+          'cols' => '20',
+          'rows' => '4',
+          'value' => set_value('firstname',$firstname)
+    );
+
+    echo '<p>'.form_textarea( $data ).'</p>'; ?>
+
+<br />
+
+<p>Last name: </p>
+<?php
+    $data = array(
+          'name' => 'lastname',
+          'cols' => '20',
+          'rows' => '4',
+          'value' => set_value('lastname',$lastname)
+    );
+
+    echo '<p>'.form_textarea( $data ).'</p>'; ?>
+
+<br />
+
 <p>Activities you are involved in: </p>
 <?php
     $data = array(

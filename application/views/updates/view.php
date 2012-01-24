@@ -79,6 +79,7 @@
 
 
                 echo '<div class="main-text"><span>'.$names.' '.$update['update'].'</span>' ;
+                echo '<span id="update-time">updated '.timespan($update['date'], now()).'</span>';
                     if(isset($update['count']) && $update['count']>3) {
                         echo ' <span class="comment-count">'.anchor('user/view_update/'.$update['ID'],'<b>'.$update['count'].' Comments </b> ').'</span>';
                     }

@@ -4,7 +4,7 @@
 if ($userid != $this->session->userdata['userid']) {
     echo 'Viewing <b>'.$profile['firstname'].' '.$profile['lastname'].'\'s</b> Network';
 } else {
-    echo 'Your Network';
+    echo 'Your Network('.$profile['firstname'].' '.$profile['lastname'].')';
 }
 
 ?>

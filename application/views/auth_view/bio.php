@@ -1,9 +1,18 @@
-<h1>Bio Page</h1>
+<div id="out-form-left">
+<h1 class="title">Bio Page</h1>
 
 <?php
+if($country){
+ $selected_country = '<option value="'.$country.'" selected="selected">'.$country.'</option>
+     <option value="none" >Select Country</option>';
+}else{
+    $selected_country = '<option value="none" selected="selected">Select Country</option>';
+}
+
 $count = '
-<optgroup label="">
-		<option value="none" selected="selected">Select Country</option>
+<optgroup label="">'.
+
+            $selected_country.'
 	</optgroup>
 	<optgroup label="common choices">
 
@@ -271,28 +280,63 @@ $count = '
 <table>
     <thead>
         <tr>
-            <th colspan="2">What kind of Mkulima are you?</th>
+             <th colspan="2"><h2 class="title">Personal Details</h2></th>
+        </tr>
+    </thead>
+    <tbody>
+         <tr>
+            <td><label>First name:</label></td>
+           <?php $firstname_data = array('name' => 'firstname', 'value' => $firstname, 'class'=> 'input' );?>
+            <td><?php echo form_input($firstname_data); ?></td>
+        </tr>
+         <tr></tr>
+        <tr></tr>
+         <tr></tr>
+        <tr></tr>
+         <tr>
+            <td><label>Last name:</label></td>
+            <?php $lastname_data = array('name' => 'lastname', 'value' => $lastname, 'class'=> 'input' );?>
+            <td><?php echo form_input($lastname_data); ?></td>
+           
+        </tr>
+    </tbody>
+    <thead>
+        <tr>
+            <th colspan="2"><h2 class="title">What kind of Mkulima are you?</h2></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Activities you are involved in</td>
-            <td><?php echo form_input('activity', set_value('activity')); ?></td>
+            <td><label>Activities you are involved in</label></td>
+             <?php $activity_data = array('name' => 'activity', 'value' => $activity, 'class'=> 'input', 'rows' => '5');?>
+            <td><?php echo form_textarea($activity_data); ?></td>
+           
         </tr>
-
+        <tr></tr>
+        <tr></tr>
+         <tr></tr>
+        <tr></tr>
         <tr>
-            <td>What are your interests?</td>
-            <td><?php echo form_input('interest', set_value('interest')); ?></td>
+            <td><label>What are your interests?</label></td>
+             <?php $interest_data = array('name' => 'interest', 'value' => $interest, 'class'=> 'input','rows' => '5' );?>
+            <td><?php echo form_textarea($interest_data); ?></td>
         </tr>
-
+        <tr></tr>
+        <tr></tr>
+         <tr></tr>
+        <tr></tr>
          <tr>
-            <td>Where is your current location (Town or City)</td>
-            <td><?php echo form_input('location', set_value('location')); ?></td>
+            <td><label>Where is your current location (Town or City)</label></td>
+             <?php $location_data = array('name' => 'location', 'value' => $location, 'class'=> 'input' );?>
+            <td><?php echo form_input($location_data); ?></td>
         </tr>
-
+        <tr></tr>
+        <tr></tr>
+         <tr></tr>
+        <tr></tr>
         <tr>
-            <td>Which Country do you reside in?</td>
-            <td><select name="country" style="width:140px; font-size:11px;">
+            <td><label>Which Country do you reside in?</label></td>
+            <td><select name="country" class="input">
                     <?php echo $count;?>
                 </select>
             </td>
@@ -316,9 +360,11 @@ $count = '
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="2"><?php echo form_submit('submit', 'Submit'); ?></td>
+            <?php $submit_data = array('name' => 'submit', 'value' => 'Submit', 'class'=> 'submit' );?>
+            <td colspan="2"><?php echo form_submit($submit_data); ?></td>
         </tr>
     </tfoot>
 </table>
 
 <?php echo form_close(''); ?>
+</div>

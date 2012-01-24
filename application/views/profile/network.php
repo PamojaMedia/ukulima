@@ -54,8 +54,13 @@
         <?php
         if(is_array($userconnects)) {
             foreach($userconnects as $connect) {
+                if($userid != $this->session->userdata['userid']){
+                    echo '<span class="network-user"'.anchor('user/view/'.$connect['userid'],'<b>'.$connect['firstname'].' '.$connect['lastname']).'</b>';
+                    echo '</span>';
+                }else{
                 echo '<span class="network-user"'.anchor('user/view/'.$connect['userid'],'<b>'.$connect['firstname'].' '.$connect['lastname']).'</b> | ';
                 echo anchor('user/disconnect_user/'.$connect['userid'],'disconnect').'</span>';
+                }
             }
         }
         else {
@@ -69,8 +74,13 @@
         <?php
         if(is_array($usertracks)) {
             foreach($usertracks as $track) {
+                if($userid != $this->session->userdata['userid']){
+                echo '<span class="network-user"'.anchor('user/view/'.$track['userid'],'<b>'.$track['firstname'].' '.$track['lastname'].'</b>');
+                echo '</span>';
+                }else{
                 echo '<span class="network-user"'.anchor('user/view/'.$track['userid'],'<b>'.$track['firstname'].' '.$track['lastname'].'</b>');
                 echo ' | '.anchor('user/untrack_user/'.$track['userid'],'untrack').'</span>';
+                }
             }
         }
         else {

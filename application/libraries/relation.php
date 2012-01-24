@@ -71,6 +71,13 @@ class relation
             
             return $data;
         }
+        
+         public function suggest_connect_long()
+        {
+            $data = $this->ci->relation_model->user_suggest_connect_long();
+            
+            return $data;
+        }
 
         /*
          * retireve users that the user is mutually following but is not connected to
@@ -95,6 +102,14 @@ class relation
             
             return $data;
         }
+        
+        public function suggest_track_long()
+        {
+            $data = $this->ci->relation_model->user_suggest_track_long();
+            
+            return $data;
+        }
+
 
        
 

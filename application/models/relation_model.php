@@ -252,7 +252,32 @@ class Relation_model extends CI_Model {
             ->where('userid !=', $this->session->userdata['userid'])
             ->where('userstatus',0)
             ->where('activation_code','')
+            ->where('firstname !=','')
             ->limit(5)
+            ->order_by('rand()');
+        $result = $this->db->get();
+        
+        if($result->num_rows()) {
+            return $result->result_array();
+        }
+        
+        return false;
+        
+    }
+    
+    public function user_suggest_connect_long() {
+
+        //this area checks users that you are not connected to.
+        $userid = $this->db->escape($this->session->userdata['userid']);
+        
+        $this->db->select('people.userid, firstname, lastname, username')
+            ->from('people')
+            ->where('userid not in (SELECT if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus < 2)','',false)
+            ->where('userid !=', $this->session->userdata['userid'])
+            ->where('userstatus',0)
+            ->where('activation_code','')
+            ->where('firstname !=','')
+            ->limit(30)
             ->order_by('rand()');
         $result = $this->db->get();
         
@@ -276,6 +301,7 @@ class Relation_model extends CI_Model {
             ->where('userid not in (SELECT if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus < 2)','',false)
             ->where('userstatus',0)
             ->where('activation_code','')
+            ->where('firstname !=','')
             ->limit(5)
             ->order_by('rand()');
                 
@@ -303,7 +329,33 @@ class Relation_model extends CI_Model {
             ->where('userid != ',$this->session->userdata['userid'])
             ->where('userstatus',0)
             ->where('activation_code','')
+            ->where('firstname !=','')
             ->limit(5)
+            ->order_by('rand()');
+                
+        $result = $this->db->get();
+        
+        if($result->num_rows()) {
+            return $result->result_array();
+        }
+        
+        return false;
+        
+    }
+    
+     public function user_suggest_track_long() {
+
+        $userid = $this->db->escape($this->session->userdata['userid']);
+
+        $this->db->select('userid, firstname, lastname, username')
+            ->from('people')
+            ->where('userid not in (select userid_2 from follow where userid_1 = '.$userid.' and followstatus = 1)','',false)
+            ->where('userid not in (SELECT if(userid_1!='.$userid.',userid_1,userid_2) as userid from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus < 2)','',false)
+            ->where('userid != ',$this->session->userdata['userid'])
+            ->where('userstatus',0)
+            ->where('activation_code','')
+            ->where('firstname !=','')
+            ->limit(30)
             ->order_by('rand()');
                 
         $result = $this->db->get();

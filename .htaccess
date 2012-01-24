@@ -1,6 +1,8 @@
+#order deny,allow
+#deny from all
 
 
 RewriteEngine on
-RewriteBase /ukulima
-RewriteCond $1 !^(index\.php|includes|robots\.txt|fonts|assets|user_guide|javascript|avatar)
+RewriteBase /
+RewriteCond $1 !^(index\.php|includes|robots\.txt|fonts|assets|user_guide|javascript|avatar|app)
 RewriteRule ^(.*)$ index.php?/$1 [L]

@@ -34,11 +34,11 @@
                     <ul id="menu">
                         <li><?php echo anchor('user/home', 'Home'); ?> <div class="drop-arrow"></div>
                             <ul class="submenu">
-                                <li><?php echo anchor('user/profile', 'My Farm'); ?></li>
-                                <li><?php echo anchor('user/profile', 'Market place'); ?></li>
-                                <li><?php echo anchor('user/profile', 'Knowledge Area'); ?></li>
-                                <li><?php echo anchor('user/profile', 'App Store'); ?></li>
-                                <li><?php echo anchor('user/profile', 'Advertisement'); ?></li>
+                                <li><?php echo anchor('user/coming_soon/1', 'My Farm'); ?></li>
+                                <li><?php echo anchor('user/coming_soon/2', 'Market place'); ?></li>
+                                <li><?php echo anchor('user/coming_soon/3', 'Knowledge Area'); ?></li>
+                                <li><?php echo anchor('user/coming_soon/4', 'App Store'); ?></li>
+                                <li><?php echo anchor('user/coming_soon/5', 'Advertisement'); ?></li>
                             </ul>
                         </li>
                         <li><?php echo anchor('user/profile', 'Profile'); ?> <div class="drop-arrow"></div>
@@ -46,6 +46,7 @@
                                 <li><?php echo anchor('user/updates', 'Updates'); ?></li>
                                 <li><?php echo anchor('user/messages', 'Messages'); ?></li>
                                 <li><?php echo anchor('user/questions', 'Questions'); ?></li>
+                                <li><?php echo anchor('user/suggest', 'People'); ?></li>
                             </ul>
                         </li>
                         <li><?php echo anchor('auth/logout', 'Logout'); ?></li>

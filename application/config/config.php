@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'Your Base URL'; // example: http://localhost/ukulima
+$config['base_url']	= '';/* http://localhost/ukulima */
 
 /*
 |--------------------------------------------------------------------------

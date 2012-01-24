@@ -352,12 +352,15 @@ class Redux_auth_model extends CI_Model {
         if ($email === false) {
             return false;
         }
+        
 
         $query = $this->db->select('forgotten_password_code')
                         ->where('email', $email)
                         ->limit(1)
                         ->get($users_table);
-
+        if($query->num_rows() == 0){
+            return false;
+        }
         $result = $query->row();
 
         $code = $result->forgotten_password_code;
@@ -527,7 +530,7 @@ class Redux_auth_model extends CI_Model {
      * @return void
      * @author Mathew
      * */
-    public function register($username = false, $password = false, $email = false) {
+    public function register($username = false,$firstname = '', $lastname= '', $password = false, $email = false, $phonenumber='') {
         $users_table = $this->tables['people'];
         // $groups_table       = $this->tables['groups'];
 
@@ -548,11 +551,13 @@ class Redux_auth_model extends CI_Model {
 
         // Users table.
         $data = array('username' => $username,
-            
+            'firstname' => $firstname,
+            'lastname' => $lastname,
             'password' => $password,
             'email' => $email,
-            
-            'ip_address' => $ip_address);
+            'phonenum' => $phonenumber,
+            'ip_address' => $ip_address,
+            'date_reg'=> date('Y-m-d'));
 
         $this->db->insert($users_table, $data);
 
@@ -563,10 +568,10 @@ class Redux_auth_model extends CI_Model {
      * Method to update the user bio
      *
      */
-    public function bio($activity='', $interest='', $location='', $country='') {
+    public function bio($firstname = '', $lastname = '', $activity='', $interest='', $location='', $country='') {
         $userid = $this->session->userdata['userid'];
 
-        $data = array('activity' => $activity, 'interest' => $interest, 'location' => $location, 'country' => $country);
+        $data = array('firstname'=>$firstname, 'lastname'=>$lastname,'activity' => $activity, 'interest' => $interest, 'location' => $location, 'country' => $country);
         $this->db->update('people', $data, array('userid' => $userid));
         return ($this->db->affected_rows() == 1) ? true : false;
     }
@@ -585,7 +590,7 @@ class Redux_auth_model extends CI_Model {
             return false;
         }
 
-        $query = $this->db->select($identity_column . ', password, activation_code, username, lastname, firstname, userid, phonenum, avatar, userstatus')
+        $query = $this->db->select($identity_column . ', password, activation_code, username, lastname, firstname, userid, phonenum, avatar, userstatus,usertype')
                         ->where($identity_column, $identity)
                         ->limit(1)
                         ->get($users_table);
@@ -611,7 +616,8 @@ class Redux_auth_model extends CI_Model {
                     'firstname' => $result->firstname,
                     'userid' => $result->userid,
                     'phonenum' => $result->phonenum,
-                    'avatar' => $result->avatar
+                    'avatar' => $result->avatar,
+                    'usertype' => $result->usertype
                 );
 
                 $this->session->set_userdata($user_data);

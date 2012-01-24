@@ -170,7 +170,7 @@ class redux_auth {
         $email_activation = $this->ci->config->item('email_activation');
         $email_folder = $this->ci->config->item('email_templates');
 
-        $register = $this->ci->redux_auth_model->register($username, $password, $email);
+        $register = $this->ci->redux_auth_model->register($username,$firstname, $lastname, $password, $email, $phonenumber);
         if($confirm=='phone') {
             $this->ci->redux_auth_model->deactivate($username);
             $code = $this->ci->redux_auth_model->activation_code;
@@ -221,9 +221,9 @@ class redux_auth {
      * @return true
      */
 
-   public function bio($activity, $interest, $location, $country)
+   public function bio($firstname, $lastname, $activity, $interest, $location, $country)
    {
-         $bio = $this->ci->redux_auth_model->bio($activity, $interest, $location, $country);
+         $bio = $this->ci->redux_auth_model->bio($firstname, $lastname, $activity, $interest, $location, $country);
 
          return $bio;
    }
@@ -380,7 +380,7 @@ class redux_auth {
         $num_length = strlen($phonenumber);
         if($phonenumber!='' && $num_length>=10 && $num_length<=12 && $message != '') {
             $source = 'ukulima.net';
-            $url = "URL to your SMS provider";
+            $url = "";/*custom url for the sms center*/
             $ch = curl_init();    // initialize curl handle
             curl_setopt($ch, CURLOPT_URL,$url); // set url
             curl_setopt($ch, CURLOPT_FAILONERROR, 1);

@@ -17,7 +17,7 @@
     ?>
 
 <?php echo form_open_multipart('auth/do_upload'); ?>
-
+<br>
 <table>
     <thead>
         <tr>

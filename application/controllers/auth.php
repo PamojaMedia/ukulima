@@ -126,19 +126,19 @@ class Auth extends CI_Controller {
                 /* Testing if response to j2me app will work */
                 if ($this->is_mobile) {
                     if ($confirm == 'phone') {
-                        if ($this->agent->is_mobile('j2me', 'midp')) {
+                      /*  if ($this->agent->is_mobile('j2me', 'midp')) {
                             echo 'registered';
-                        } else {
+                        } else { */
                             $this->session->set_flashdata('message', '<p class="success">One final step. An activation code will be sent to you by SMS. Use the code to activate your account.</p>');
                             redirect('auth/mobile_activate');
-                        }
+                       // }
                     } elseif ($confirm == 'email') {
-                        if ($this->agent->is_mobile('j2me', 'midp')) {
+                       /* if ($this->agent->is_mobile('j2me', 'midp')) {
                             echo 'registered';
-                        } else {
+                        } else { */
                             $this->session->set_flashdata('message', '<p class="success">One final step. Please check your email to activate your account.</p>');
                             redirect('auth/mobile_activate');
-                        }
+                       // }
                     }
                 } else {
                     $this->session->set_flashdata('message', '<p class="success">One final step. Please check your email to activate your account.</p>');
@@ -147,12 +147,12 @@ class Auth extends CI_Controller {
             } else {
                 /* Testing if response to j2me app will work */
                 if ($this->is_mobile) {
-                    if ($this->agent->is_mobile('j2me', 'midp')) {
+                    /*if ($this->agent->is_mobile('j2me', 'midp')) {
                         echo 'not registered';
-                    } else {
+                    } else { */
                         $this->session->set_flashdata('message', '<p class="error">Something went wrong, please try again or contact the helpdesk.</p>');
                         redirect('auth/register');
-                    }
+                    //}
                 } else {
                     $this->session->set_flashdata('message', '<p class="error">Something went wrong, please try again or contact the helpdesk.</p>');
                     redirect('auth/register');
@@ -177,16 +177,19 @@ class Auth extends CI_Controller {
         if ($this->redux_auth->logged_in()) {
             if ($this->form_validation->run('bio') == false) {
                 $this->form_validation->set_error_delimiters('<p class="error">', '</p>');
-                $bio_details = $this->redux_auth->profile($this->session->userdata['userid']);
-                $this->data['content'] = $this->load->view('auth_view/' . $this->view_prefix . 'bio', $bio_details, true);
+                //$bio_details = $this->redux_auth->profile($this->session->userdata['userid']);
+                $data =$this->redux_auth->profile($this->session->userdata['userid']);
+                $this->data['content'] = $this->load->view('auth_view/' . $this->view_prefix . 'bio', $data, true);
                 $this->load->view($this->tpl, $this->data);
             } else {
+                $firstname = $this->input->post('firstname');
+                $lastname = $this->input->post('lastname');
                 $activity = $this->input->post('activity');
                 $interest = $this->input->post('interest');
                 $location = $this->input->post('location');
                 $country = $this->input->post('country');
 
-                $bio = $this->redux_auth->bio($activity, $interest, $location, $country);
+                $bio = $this->redux_auth->bio($firstname, $lastname, $activity, $interest, $location, $country);
 
                 if ($bio) {
                     /* response for mobile app and .mobi site */
@@ -198,8 +201,8 @@ class Auth extends CI_Controller {
                             redirect('user/profile');
                         }
                     } else {
-                        $this->session->set_flashdata('message', '<p class="success">Your Bio has been updated. How about your picture?</p>');
-                        redirect('auth/avatar');
+                        $this->session->set_flashdata('message', '<p class="success">Your Bio has been updated. Connect and track other users on the network</p>');
+                        redirect('user/suggest');
                     }
                 } else {
 
@@ -317,9 +320,9 @@ class Auth extends CI_Controller {
 
         if ($this->redux_auth->logged_in()) {
 
-             $this->load->library('imagemanipulation');
+             $this->load->library('ImageManipulation');
 
-            if ($this->imagemanipulation->crop_image( $this->input->post('path'),$this->input->post('ext')))
+            if ($this->imagemanipulation->start($this->input->post('path'),$this->input->post('ext'))/*$this->imagemanipulation->crop_image( $this->input->post('path'),$this->input->post('ext'))*/)
                     {
                 $this->imagemanipulation->setJpegQuality('100');
                 $this->imagemanipulation->setCrop($this->input->post('x'), $this->input->post('y'), $this->input->post('w'), $this->input->post('h'));
@@ -409,6 +412,10 @@ class Auth extends CI_Controller {
      * @author Mathew
      * */
     function login() {
+        if($this->redux_auth->logged_in())
+      {
+            redirect('user/profile');
+      }
 
         if ($this->form_validation->run('login') == false) {
             $this->form_validation->set_error_delimiters('<p class="error">', '</p>');
@@ -423,10 +430,13 @@ class Auth extends CI_Controller {
             if ($login) {
                 if ($this->session->userdata('deactive_but_logged_in')) {
                     redirect('auth/reactivate');
-                } else {
+                } elseif($this->session->userdata('firstname') && $this->session->userdata('lastname')) {
                     redirect('user/home');
+                }else{
+                     redirect('auth/bio');
                 }
             } else {
+                $this->session->set_flashdata('message', '<p class="fail">Wrong username / password combination</p>');
                 redirect('auth/login');
             }
         }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.5
+-- version 3.4.9
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 31, 2011 at 03:39 AM
--- Server version: 5.0.92
--- PHP Version: 5.2.6
+-- Generation Time: Jan 24, 2012 at 06:25 AM
+-- Server version: 5.1.52
+-- PHP Version: 5.3.8
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `mobiproj_rfmobileproject`
 --
+CREATE DATABASE `mobiproj_rfmobileproject`;
+USE `mobiproj_rfmobileproject`;
 
 -- --------------------------------------------------------
 
@@ -26,17 +28,13 @@ SET time_zone = "+00:00";
 -- Table structure for table `activity_interest`
 --
 
-CREATE DATABASE  `mobiproj_rfmobileproject` ;
-
-USE `mobiproj_rfmobileproject`;
-
 CREATE TABLE IF NOT EXISTS `activity_interest` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
-  `description` text character set utf8 NOT NULL,
+  `description` text CHARACTER SET utf8 NOT NULL,
   `act_or_int` tinyint(1) NOT NULL,
   `tagsid` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  PRIMARY KEY (`ID`),
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -49,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `activity_interest` (
 CREATE TABLE IF NOT EXISTS `basis` (
   `basis_id` int(11) NOT NULL,
   `basis_name` text NOT NULL,
-  PRIMARY KEY  (`basis_id`)
+  PRIMARY KEY (`basis_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -59,9 +57,9 @@ CREATE TABLE IF NOT EXISTS `basis` (
 --
 
 CREATE TABLE IF NOT EXISTS `cause_for_notification` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `cause` smallint(2) NOT NULL,
-  PRIMARY KEY  (`ID`),
+  PRIMARY KEY (`ID`),
   UNIQUE KEY `cause` (`cause`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -72,12 +70,12 @@ CREATE TABLE IF NOT EXISTS `cause_for_notification` (
 --
 
 CREATE TABLE IF NOT EXISTS `connect` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `userid_1` int(11) NOT NULL,
   `userid_2` int(11) NOT NULL,
-  `connectstatus` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
+  `connectstatus` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=76 ;
 
 -- --------------------------------------------------------
 
@@ -86,12 +84,12 @@ CREATE TABLE IF NOT EXISTS `connect` (
 --
 
 CREATE TABLE IF NOT EXISTS `follow` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `userid_1` int(11) NOT NULL,
   `userid_2` int(11) NOT NULL,
-  `followstatus` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=64 ;
+  `followstatus` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=75 ;
 
 -- --------------------------------------------------------
 
@@ -100,27 +98,11 @@ CREATE TABLE IF NOT EXISTS `follow` (
 --
 
 CREATE TABLE IF NOT EXISTS `groups` (
-  `id` tinyint(3) unsigned NOT NULL auto_increment,
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `messages`
---
-
-CREATE TABLE IF NOT EXISTS `messages` (
-  `ID` int(11) NOT NULL auto_increment,
-  `subject` text character set utf8 NOT NULL,
-  `content` text character set utf8 NOT NULL,
-  `userid` int(11) NOT NULL,
-  `parentid` int(11) NOT NULL default '0',
-  `date` int(12) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -129,12 +111,28 @@ CREATE TABLE IF NOT EXISTS `messages` (
 --
 
 CREATE TABLE IF NOT EXISTS `message_receivers` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `msgid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
-  `count` int(11) NOT NULL default '0',
-  `deleted` tinyint(2) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
+  `count` int(11) NOT NULL DEFAULT '0',
+  `deleted` tinyint(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE IF NOT EXISTS `messages` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` text CHARACTER SET utf8 NOT NULL,
+  `content` text CHARACTER SET utf8 NOT NULL,
+  `userid` int(11) NOT NULL,
+  `parentid` int(11) NOT NULL DEFAULT '0',
+  `date` int(12) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
@@ -144,13 +142,61 @@ CREATE TABLE IF NOT EXISTS `message_receivers` (
 --
 
 CREATE TABLE IF NOT EXISTS `notifications` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `causeid` smallint(2) NOT NULL,
   `contentid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
-  `status` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=121 ;
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=152 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_clients`
+--
+
+CREATE TABLE IF NOT EXISTS `oauth_clients` (
+  `client_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(40) NOT NULL,
+  `email` varchar(40) NOT NULL,
+  `auto_approve` int(11) NOT NULL,
+  `redirect_uri` varchar(100) NOT NULL,
+  `client_secret` varchar(50) NOT NULL,
+  PRIMARY KEY (`client_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1101 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_session_scopes`
+--
+
+CREATE TABLE IF NOT EXISTS `oauth_session_scopes` (
+  `session_id` int(11) NOT NULL,
+  `access_token` text,
+  `scope` varchar(64) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `oauth_sessions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(32) NOT NULL DEFAULT '',
+  `redirect_uri` text NOT NULL,
+  `user_id` varchar(64) DEFAULT NULL,
+  `code` text,
+  `access_token` text,
+  `stage` enum('request','granted') NOT NULL DEFAULT 'request',
+  `first_requested` int(10) unsigned NOT NULL,
+  `last_updated` int(10) unsigned NOT NULL,
+  `limited` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1173 ;
 
 -- --------------------------------------------------------
 
@@ -159,26 +205,29 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 --
 
 CREATE TABLE IF NOT EXISTS `people` (
-  `userid` int(11) NOT NULL auto_increment,
-  `username` varchar(20) character set utf8 NOT NULL,
-  `firstname` varchar(50) character set utf8 NOT NULL,
-  `lastname` varchar(50) character set utf8 NOT NULL,
-  `country` varchar(20) character set utf8 NOT NULL,
-  `location` varchar(20) character set utf8 NOT NULL,
-  `activity` text NOT NULL,
-  `interest` text NOT NULL,
-  `email` varchar(100) character set utf8 NOT NULL,
-  `phonenum` varchar(12) character set utf8 NOT NULL,
-  `avatar` varchar(250) character set utf8 NOT NULL,
-  `password` varchar(50) character set utf8 NOT NULL,
-  `flagstatus` tinyint(1) NOT NULL default '0',
-  `userstatus` tinyint(1) NOT NULL default '0',
+  `userid` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) CHARACTER SET utf8 NOT NULL,
+  `firstname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `lastname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `country` varchar(20) CHARACTER SET utf8 NOT NULL,
+  `location` varchar(20) CHARACTER SET utf8 NOT NULL,
+  `activity` text CHARACTER SET utf8 NOT NULL,
+  `interest` text CHARACTER SET utf8 NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `phonenum` varchar(12) CHARACTER SET utf8 NOT NULL,
+  `avatar` varchar(250) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `date_reg` date DEFAULT NULL,
+  `flagstatus` tinyint(1) NOT NULL DEFAULT '0',
+  `userstatus` tinyint(1) NOT NULL DEFAULT '0',
   `activation_code` varchar(40) NOT NULL,
   `ip_address` varchar(40) NOT NULL,
   `forgotten_password_code` varchar(40) NOT NULL,
-  PRIMARY KEY  (`userid`),
-  UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=102 ;
+  `usertype` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`userid`),
+  UNIQUE KEY `username` (`username`,`email`),
+  FULLTEXT KEY `activity` (`activity`,`interest`,`country`,`location`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=164 ;
 
 -- --------------------------------------------------------
 
@@ -187,17 +236,17 @@ CREATE TABLE IF NOT EXISTS `people` (
 --
 
 CREATE TABLE IF NOT EXISTS `questions` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `question` varchar(400) NOT NULL,
   `userid` int(11) NOT NULL,
   `tagsid` int(11) NOT NULL,
   `ownersid` int(11) NOT NULL,
-  `parentid` int(11) NOT NULL default '0',
-  `date` int(12) NOT NULL default '0',
-  `count` int(11) NOT NULL default '0',
-  `deleted` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+  `parentid` int(11) NOT NULL DEFAULT '0',
+  `date` int(12) NOT NULL DEFAULT '0',
+  `count` int(11) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -206,14 +255,44 @@ CREATE TABLE IF NOT EXISTS `questions` (
 --
 
 CREATE TABLE IF NOT EXISTS `recommend` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `userid_1` int(11) NOT NULL,
   `userid_2` int(11) NOT NULL,
-  `basis` text character set utf8 NOT NULL,
+  `basis` text CHARACTER SET utf8 NOT NULL,
   `tagsid` int(11) NOT NULL,
-  `date` int(12) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
+  `date` int(12) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_areas`
+--
+
+CREATE TABLE IF NOT EXISTS `report_areas` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `contentarea` smallint(2) NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
+CREATE TABLE IF NOT EXISTS `reports` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `causeid` smallint(2) NOT NULL,
+  `contentid` int(11) NOT NULL,
+  `basis` text NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `userid` int(11) NOT NULL,
+  `date` int(12) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -223,11 +302,11 @@ CREATE TABLE IF NOT EXISTS `recommend` (
 --
 
 CREATE TABLE IF NOT EXISTS `search` (
-  `searchid` int(11) NOT NULL auto_increment,
-  `text` text character set utf8 NOT NULL,
-  `date` int(12) NOT NULL default '0',
+  `searchid` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text CHARACTER SET utf8 NOT NULL,
+  `date` int(12) NOT NULL DEFAULT '0',
   `userid` int(11) NOT NULL,
-  PRIMARY KEY  (`searchid`)
+  PRIMARY KEY (`searchid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -237,12 +316,24 @@ CREATE TABLE IF NOT EXISTS `search` (
 --
 
 CREATE TABLE IF NOT EXISTS `sessions` (
-  `session_id` varchar(40) NOT NULL default '0',
-  `ip_address` varchar(16) NOT NULL default '0',
+  `session_id` varchar(40) NOT NULL DEFAULT '0',
+  `ip_address` varchar(16) NOT NULL DEFAULT '0',
   `user_agent` varchar(50) NOT NULL,
-  `last_activity` int(10) unsigned NOT NULL default '0',
+  `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
   `user_data` text NOT NULL,
-  PRIMARY KEY  (`session_id`)
+  PRIMARY KEY (`session_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tag_names`
+--
+
+CREATE TABLE IF NOT EXISTS `tag_names` (
+  `ID` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(15) CHARACTER SET utf8 NOT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -254,19 +345,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 CREATE TABLE IF NOT EXISTS `tags` (
   `ID` int(11) NOT NULL,
   `tagnameid` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`,`tagnameid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tag_names`
---
-
-CREATE TABLE IF NOT EXISTS `tag_names` (
-  `ID` int(11) NOT NULL default '0',
-  `name` varchar(15) character set utf8 NOT NULL,
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY (`ID`,`tagnameid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -276,17 +355,17 @@ CREATE TABLE IF NOT EXISTS `tag_names` (
 --
 
 CREATE TABLE IF NOT EXISTS `updates` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `update` varchar(400) NOT NULL,
   `userid` int(11) NOT NULL,
   `tagsid` int(11) NOT NULL,
   `ownersid` int(11) NOT NULL,
-  `parentid` int(11) NOT NULL default '0',
-  `date` int(12) NOT NULL default '0',
-  `count` int(11) NOT NULL default '0',
-  `deleted` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+  `parentid` int(11) NOT NULL DEFAULT '0',
+  `date` int(12) NOT NULL DEFAULT '0',
+  `count` int(11) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
 
 -- --------------------------------------------------------
 
@@ -295,7 +374,7 @@ CREATE TABLE IF NOT EXISTS `updates` (
 --
 
 CREATE TABLE IF NOT EXISTS `user_content` (
-  `ID` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
   `title` text NOT NULL,
   `content` text NOT NULL,
@@ -303,9 +382,9 @@ CREATE TABLE IF NOT EXISTS `user_content` (
   `pageviews` int(11) NOT NULL,
   `file` varchar(250) NOT NULL,
   `filetype` varchar(5) NOT NULL,
-  `date` int(12) NOT NULL default '0',
-  `status` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
+  `date` int(12) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

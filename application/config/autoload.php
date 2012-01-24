@@ -52,7 +52,7 @@ $autoload['packages'] = array(APPPATH.'third_party');
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('database', 'session', 'xmlrpc', 'redux_auth', 'form_validation','Accessdenied','relation','update','messaging', 'search','profile','questions');
+$autoload['libraries'] = array('database', 'session', 'xmlrpc', 'redux_auth', 'form_validation','Accessdenied','relation','update','messaging', 'search','profile','questions', 'admin_lib');
 
 
 /*

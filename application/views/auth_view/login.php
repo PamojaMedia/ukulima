@@ -4,10 +4,10 @@
     </div>
 
     <?php
-    if($this->session->flashdata('message') != '') :
+    if($this->session->flashdata('message') != '') 
         echo $this->session->flashdata('message');
-        echo '</div>'; // close the div id="out-form"
-    else : ?>
+        //echo '</div>'; // close the div id="out-form"
+    ?>
         <?php echo validation_errors(); ?>
 
         <?php echo form_open('auth/login'); ?>
@@ -43,6 +43,6 @@
 
 <?php echo anchor('auth/register', 'Join Us', array('class'=>'join-link'));
 
-endif;
+
 
 ?>

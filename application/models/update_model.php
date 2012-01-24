@@ -45,7 +45,7 @@ class Update_model extends CI_Model {
         $userid = $this->db->escape($userid);
         $start = $this->db->escape($start);
 
-        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid,updates.count,connections.connectstatus')
+        $this->db->select('ID,update,parentid,ownersid,firstname,lastname,people.userid,updates.count,connections.connectstatus,date')
                 ->from('updates,people')
                 ->join('(select if(userid_1!='.$userid.',userid_1,userid_2) as userid,connectstatus from connect where (userid_1 = '.$userid.' or userid_2 = '.$userid.') and connectstatus = 1) as connections','connections.userid = updates.userid or connections.userid = updates.ownersid','left')
                 ->where('parentid = ',0)

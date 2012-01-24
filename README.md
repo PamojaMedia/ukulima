@@ -13,10 +13,11 @@ Installation
 		-config.php - base url
 		-database.php - database connections
 		-email.php - email functions
+4. Navigate to application/libraries/redux_auth.php - edit the send_sms and register functions                
 		
-4. Code it.
+5. Code it.
 
 
-Still on beta version.
+Still on beta version. 
 
  

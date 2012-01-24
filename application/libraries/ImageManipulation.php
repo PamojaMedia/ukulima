@@ -46,12 +46,15 @@ class ImageManipulation {
      *
      * @param string $imgFile The image filename.
      */
+        public function __construct(){
+            $this->ci = & get_instance();
+        }
   
 
-	public function _construct($imgfile)
+	public function start($imgfile, $ext)
 	{
 		//detect image format
-		$this->image["format"] = ereg_replace(".*\.(.*)$", "\\1", $imgfile);
+		$this->image["format"] = $ext;
 		$this->image["format"] = strtoupper($this->image["format"]);
 		
 		// convert image into usable format.
@@ -78,7 +81,7 @@ class ImageManipulation {
 
 		// Image is ok
 		$this->imageok = true;
-		
+		return true;
 		// Work out image size
 		$this->image["sizex"]  = imagesx($this->image["src"]);
 		$this->image["sizey"] = imagesy($this->image["src"]);

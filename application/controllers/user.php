@@ -54,7 +54,7 @@ class user extends CI_Controller {
     }
 
     function updates($page = 0) {
-
+        $this->load->helper('date');
         $update = $this->input->post('update');
         if (!empty($update)) {
             $this->create_update();
@@ -96,6 +96,34 @@ class user extends CI_Controller {
         $data['network'] = $this->profile->network($userid);
 
         $this->data['content'] = $this->load->view('profile/' . $this->view_prefix . 'content', $data, true);
+
+        $this->load->view($this->tpl, $this->data);
+    }
+    
+    function suggest(){
+        $data['suggestconnects'] = $this->relation->suggest_connect_long();
+        $data['suggesttracks'] = $this->relation->suggest_track_long();
+        $this->data['content'] = $this->load->view('profile/' . $this->view_prefix . 'suggest', $data, true);
+        $this->load->view($this->tpl, $this->data);
+    }
+    function coming_soon($choice = ''){
+        if($choice == 1){
+            $component = "My Farm";
+        }elseif($choice == 2){
+            $component = "Market Place";
+        }elseif($choice == 3){
+            $component = "Knowledge Area";
+        }elseif($choice == 4){
+            $component = "App Store";
+        }elseif($choice == 5){
+            $component = "Advertisements";
+        }else{
+            redirect('user/home');
+        }
+        
+        $data['component'] = $component;
+        
+        $this->data['content'] = $this->load->view('auth_view/' . $this->view_prefix . 'coming_soon', $data, true);
 
         $this->load->view($this->tpl, $this->data);
     }
@@ -375,7 +403,7 @@ class user extends CI_Controller {
                 $this->network_suggestions();
             }
         } else {
-            $this->home();
+            $this->updates();
         }
     }
 
@@ -395,7 +423,7 @@ class user extends CI_Controller {
                 $this->network_suggestions();
             }
         } else {
-            $this->home();
+            $this->updates();
         }
     }
 

@@ -56,7 +56,7 @@ else {
                         (isset($update['rec_first']) ? 'to <b>' . $update['rec_first'] . ' ' . $update['rec_last'] . '</b> ' : '');
 
                 echo '<p class=update-text>' . $names . '<span class="p-content">' . $update['update'] . '</span>';
-                
+                echo '<span class="update-time-mobile">updated '.timespan($update['date'], now()).'</span>';
                 if( $up_userid==$this->session->userdata['userid'] || $up_ownerid==$this->session->userdata['userid'] ) {
                     echo anchor('user/delete/' . $update['ID'], '<b> X </b>', array('class' => 'delete', 'id' => 'deleteup' . $update['ID']));
                 }
